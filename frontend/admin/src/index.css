@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:where(.css-dev-only-do-not-override-nllxry).ant-btn-primary {
+  color: #fff;
+  --tw-bg-opacity: 1;
+  background-color: rgb(132 204 22 / var(--tw-bg-opacity));
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+}
+
+@layer components {
+  .menu-item {
+    @apply px-4 py-2 hover:bg-gray-400 rounded-lg hover:text-white cursor-pointer ;
+  }
+}
+
+/* CSS code */
+.text-container {
+  width: 100px; /* Set the width of your container */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Hide any content that overflows the container */
+  text-overflow: ellipsis; /* Display an ellipsis (...) for truncated text */
+}
