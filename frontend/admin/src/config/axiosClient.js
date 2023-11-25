@@ -28,7 +28,8 @@ axiosClient.interceptors.request.use((config) => {
   }
   return config;
 
-})
+
+});
 
 // Add a request interceptor
 axiosClient.interceptors.request.use(
@@ -37,8 +38,8 @@ axiosClient.interceptors.request.use(
       "Content-type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "x-api-key": import.meta.env.VITE_API_KEY,
-      "authorization" : localStorage.getItem("accessToken") || "",
-      "x-client-id": getUserIdFromToken()
+      authorization: localStorage.getItem("accessToken") || "",
+      "x-client-id": getUserIdFromToken(),
     };
     return config;
   },
@@ -47,4 +48,3 @@ axiosClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-export default axiosClient;
