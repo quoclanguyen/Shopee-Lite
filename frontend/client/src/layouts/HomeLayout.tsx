@@ -1,17 +1,15 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
 interface HomeLayoutProps {
   children: ReactNode;
 }
 function HomeLayout(props: HomeLayoutProps) {
   return (
-    <div>
+    <div className="w-[calc(100vw-15px)] h-full">
       <Header />
-      <div>
-        <Sidebar />
-        <main>{props.children}</main>
-      </div>
+      <main className="min-h-screen h-full ">{props.children}</main>
+      <Footer />
     </div>
   );
 }

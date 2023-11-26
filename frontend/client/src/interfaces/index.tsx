@@ -21,3 +21,9 @@ export interface JwtPayload {
   jti?: string;
   userId?: string;
 }
+export interface CategoryProps {
+  initialImage: string;
+  imageOnHover: string;
+  label: string;
+  color: string;
+}
