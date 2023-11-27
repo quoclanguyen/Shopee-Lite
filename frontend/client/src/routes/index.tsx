@@ -8,6 +8,7 @@ import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ProductDetail from "../pages/ProductDetail";
+import Register from "../pages/Register";
 
 function AppRoutes() {
   const isAuthenticated = useSelector(
@@ -21,6 +22,7 @@ function AppRoutes() {
           <Route element={<PrivateRoutes isAuth={isAuthenticated} />}></Route>
           <Route element={<PublicRoute isAuth={isAuthenticated} />}>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Route>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail />} />

@@ -2,16 +2,17 @@
 // Login.js
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Toaster } from "react-hot-toast";
-import { LoginDto } from "../interfaces";
 import { Link } from "react-router-dom";
+import { LoginDto, RegisterDto } from "../interfaces";
 
-const Login = () => {
+const Register = () => {
   // const dispatch = useDispatch();
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<LoginDto>();
+    watch,
+  } = useForm<RegisterDto>();
   const onSubmit: SubmitHandler<LoginDto> = async (data) => {
     // const response = await login(data);
     console.log({ data });
@@ -32,13 +33,39 @@ const Login = () => {
         <div className="space-y-8 p-4 rounded-md">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Đăng nhập
+              Đăng ký
             </h2>
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="max-w-md mx-auto my-8"
           >
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Tên
+              </label>
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Tên không được để trống.",
+                  minLength: {
+                    value: 6,
+                    message: "Tên phải chứa ít nhất 6 ký tự.",
+                  },
+                }}
+                render={({ field }: { field: any }) => (
+                  <input
+                    {...field}
+                    className="w-full p-2 border border-gray-300 rounded-sm bg-white text-gray-900 focus:border-sky-500 focus:border-2 focus:outline-none"
+                  />
+                )}
+              />
+              <p className="text-red-500 text-xs mt-1">
+                {errors?.name && errors?.name.message}
+              </p>
+            </div>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Email
@@ -75,20 +102,48 @@ const Login = () => {
                 defaultValue=""
                 rules={{
                   required: "Mật khẩu không được để trống.",
-                  // minLength: {
-                  //   value: 6,
-                  //   message: 'Mật khẩu phải chứa ít nhất 6 ký tự.',
-                  // },
-                  // pattern: {
-                  //   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                  //   message: 'Mật khẩu phải chứa chữ in hoa, in thường, ký tự đặc biệt và số.',
-                  // },
+                  minLength: {
+                    value: 6,
+                    message: "Mật khẩu phải chứa ít nhất 6 ký tự.",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                    message:
+                      "Mật khẩu phải chứa chữ in hoa, in thường, ký tự đặc biệt và số.",
+                  },
                 }}
                 render={({ field }: { field: any }) => (
                   <input
                     type="password"
                     {...field}
                     className="text-gray-900 w-full p-2 border border-gray-300 rounded-sm bg-white focus:border-sky-500 focus:border-2 focus:outline-none"
+                  />
+                )}
+              />
+              <p className="text-red-500 text-xs mt-1">
+                {errors?.password && errors?.password.message}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Nhập lại mật khẩu
+              </label>
+              <Controller
+                name="confirmPassword"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Xác nhận mật khẩu không được bỏ trống.",
+                  validate: (value) =>
+                    value === watch("password") ||
+                    "Xác nhận mật khẩu không khớp.",
+                }}
+                render={({ field }: { field: any }) => (
+                  <input
+                    {...field}
+                    type="password"
+                    className="w-full p-2 border border-gray-300 rounded-sm bg-white text-gray-900 focus:border-sky-500 focus:border-2 focus:outline-none"
                   />
                 )}
               />
@@ -103,8 +158,8 @@ const Login = () => {
               Đăng nhập
             </button>
           </form>
-          <p className="text-gray-900 text-center w-full">
-            Chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+          <p className="text-center text-gray-900">
+            Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
           </p>
         </div>
         <Toaster position="bottom-right" reverseOrder={false} />
@@ -113,4 +168,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

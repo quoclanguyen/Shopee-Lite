@@ -8,6 +8,9 @@ import { Rate } from "antd";
 import { displayCurrencyVND } from "../utils";
 import HomeLayout from "../layouts/HomeLayout";
 import QuantityInput from "../components/QuantityInput";
+import { useSelector } from "react-redux";
+import { cartSelector } from "../store/reducer/cart";
+import { Product } from "../interfaces";
 
 interface ProductDetailProps {
   image?: string;
@@ -27,7 +30,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     selector: ".product-detail",
   });
   const { data: product, isLoading } = useFindProductById(id || "");
-  console.log({ product });
+  const cartItems = useSelector(cartSelector);
+  const currentProduct = cartItems.filter(
+    (product: Product) => product.id == id
+  );
+  console.log("cartItems: ", cartItems);
+  console.log("currentProduct: ", currentProduct);
+  console.log("Length: ", currentProduct.length);
   if (!showPage) return <Loading isLoaded={isLoaded} progress={progress} />;
   if (isLoading) return <Loading isLoaded={isLoaded} progress={progress} />;
   return (
@@ -40,7 +49,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             alt={product?.title}
           />
         </div>
-        <div className="p-8">
+        <div className="px-8">
           <div className="uppercase tracking-wide text-gray-800 text-lg font-semibold">
             {product?.title}
           </div>
@@ -57,8 +66,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               {product?.rating.count} đánh giá
             </span>
           </div>
-          <QuantityInput />
-          <div className="flex justify-center gap-x-4 items-center my-4 outline-none">
+          <QuantityInput
+            initialQuantity={currentProduct.length}
+            product={product}
+          />
+          <div className="flex justify-start gap-x-4 items-center my-4 outline-none">
             <button className="rounded-none px-4 py-2 bg-amber-400 text-white w-[20vw] box-border">
               Mua ngay
             </button>

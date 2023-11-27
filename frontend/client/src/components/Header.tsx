@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Header.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { BsCart2 } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { cartSelector } from "../store/reducer/product";
 import SearchField from "./SearchField";
 import clsx from "clsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Popover, ConfigProvider } from "antd";
 import { setLogout } from "../store/reducer/auth";
 import { useFindAllProduct } from "../api/services/productServices";
+import { cartSelector } from "../store/reducer/cart";
 
 interface HeaderProps {
   logoUrl?: string;
@@ -23,11 +23,11 @@ const Header: React.FC<HeaderProps> = ({
   const token = localStorage.getItem("accessToken");
   const { pathname } = useLocation();
   const dispatch = useDispatch();
-  const cartQuantity = useSelector(cartSelector);
+  const cartItems = useSelector(cartSelector);
   const [scrollDirection, setScrollDirection] = useState("original");
   const navigate = useNavigate();
   const { data: products } = useFindAllProduct();
-  useEffect(() => {
+  useLayoutEffect(() => {
     let lastScrollTop = 0;
 
     const handleScroll = () => {
@@ -51,19 +51,19 @@ const Header: React.FC<HeaderProps> = ({
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollDirection, pathname]);
-  useEffect(() => setScrollDirection("up"), [cartQuantity]);
+  useEffect(() => setScrollDirection("up"), [cartItems]);
   return (
     <header
       className={clsx(
-        "w-full top-0 z-50 transition-all duration-300 ease-in-out px-4 py-2 bg-white shadow-lg text-black block",
-        {
-          "fixed transition-transform duration-300 transform -translate-y-full":
-            scrollDirection === "down",
-        },
-        {
-          "fixed transition-transform duration-300 transform translate-y-0":
-            scrollDirection === "up",
-        }
+        "w-full top-0 z-50 transition-all duration-300 ease-in-out px-4 py-2 bg-white shadow-lg text-black block"
+        // {
+        //   "fixed transition-transform duration-300 transform -translate-y-full":
+        //     scrollDirection === "down",
+        // },
+        // {
+        //   "fixed transition-transform duration-300 transform translate-y-0":
+        //     scrollDirection === "up",
+        // }
       )}
     >
       <div className="flex justify-between w-full">
@@ -80,10 +80,10 @@ const Header: React.FC<HeaderProps> = ({
           <div className="relative w-fit">
             <div className="inline-block bg-red-600 rounded-[50%] absolute top-[-5px] right-[-2px]">
               <p className="text-[10px] text-gray-100 m-0 px-1 py-0">
-                {cartQuantity > 99
+                {cartItems.length > 99
                   ? "99+"
-                  : cartQuantity !== 0
-                  ? cartQuantity
+                  : cartItems.length !== 0
+                  ? cartItems.length
                   : ""}
               </p>
             </div>

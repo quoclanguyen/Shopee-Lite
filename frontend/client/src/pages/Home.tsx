@@ -44,14 +44,7 @@ function Home() {
           </h1>
           <div className="w-full grid grid-cols-4 mb-4 gap-8 px-20">
             {products?.map((product: any) => (
-              <ProductItem
-                id={product.id}
-                product_price={product.price}
-                product_name={product.title}
-                rating={product.rating}
-                product_thumb={product.image}
-                tag="new"
-              />
+              <ProductItem product={product} />
             ))}
           </div>
         </div>
