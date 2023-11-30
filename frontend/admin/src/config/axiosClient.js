@@ -4,14 +4,14 @@ const token = localStorage.getItem("accessToken");
 const axiosClient = axios.create({
     baseURL: "http://localhost:3000/v1/api/",
     // withCredentials: true,
-    timeout: 5000,
+    timeout: 10000,
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     },
   });
 axiosClient.interceptors.request.use((config) => {
-  if(token){
+  if(token != null){
     config.headers = {
       "Content-type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -48,3 +48,5 @@ axiosClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export default axiosClient;

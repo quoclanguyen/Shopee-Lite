@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { clothSize } from '../constants';
 import storage from "../firebase";
-import { createNewProduct, updateProduct } from '../services/product';
+import { createNewProduct, updateProduct, publishProduct } from '../services/product';
 import { getCurrentDateAsString } from '../utils';
 const ProductForm = ({ record, isEditForm, methods }) => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -16,19 +16,25 @@ const ProductForm = ({ record, isEditForm, methods }) => {
     const handleReset = () => {
         reset();
     };
-    useEffect(()=>{
-        if(record){
+    useEffect(() => {
+        if (record && !isEditForm) {
+            reset()
+        } else if (record) {
             for (const [key, value] of Object.entries(record)) {
                 setValue(key, value);
-              }
-        } else {
-            reset()
+            }
         }
-    },[record, isEditForm])
-    // console.log({record, values, isEditForm})
+    }, [record, isEditForm])
+    console.log({ record, values, isEditForm })
     const onSubmit = (data) => {
+        const key = 'creating';
+        messageApi.open({
+            key,
+            type: 'loading',
+            content: 'Đang xử lý...',
+            duration: 3
+        });
         const { product_thumb } = data;
-
         const storageRef = ref(storage, `/products/product-${getCurrentDateAsString()}`);
         const uploadTask = uploadBytesResumable(storageRef, product_thumb);
         new Promise((resolve, reject) => {
@@ -46,37 +52,40 @@ const ProductForm = ({ record, isEditForm, methods }) => {
                 },
                 async () => {
                     try {
-                        const url = await getDownloadURL(uploadTask.snapshot.ref);
+                        if (isEditForm) {
+                            var url = record.product_thumb
+                        }
+                        else {
+                            var url = await getDownloadURL(uploadTask.snapshot.ref)
+                        }
+                        console.log({ url })
                         const product = { ...data, product_thumb: url }
-                        console.log({url})
-                        if(url){
+                        if (url) {
+                            console.log({product})
                             const response = isEditForm ? await updateProduct(product._id, product) : await createNewProduct(product)
-                            console.log({response})
+                            console.log({ response })
                             resolve(url);
-                            onCloseModal(true)
-                            const key = 'creating';
-                            messageApi.open({
-                                key,
-                                type: 'loading',
-                                content: 'Đang xử lý...',
-                            });
                             if (response.statusText === "OK") {
+                                const keyNoti = 'notify'
                                 messageApi.open({
-                                    key,
+                                    keyNoti,
                                     type: 'success',
-                                    content: isEditForm ? 'Cập nhật sản phẩM thành công': 'Tạo sản phẩm mới thành công!',
+                                    content: isEditForm ? 'Cập nhật sản phẩm thành công' : 'Tạo sản phẩm mới thành công!',
                                     duration: 3,
                                 });
+                                if (!isEditForm) {
+                                    const publishResponse = await publishProduct(response.data.metadata._id, product)
+                                    console.log({ publishResponse })
+                                    reset()
+                                }
+                                methods.setModalOpen(false)
                             }
-                        }                       
-                        
-
+                        }
                     }
                     catch (error) {
                         console.log("Error getting download url")
                         reject(error);
                     }
-
                 }
             );
         })
