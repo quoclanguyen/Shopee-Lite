@@ -20,12 +20,7 @@ interface ProductProps {
   title: string;
 }
 function Home() {
-  const { isLoaded, progress, showPage } = useLoading({
-    selector: ".home-container",
-  });
   const { data: products, isLoading } = useFindAllProduct();
-  if (!showPage) return <Loading isLoaded={isLoaded} progress={progress} />;
-  if (isLoading) return <Loading isLoaded={isLoaded} progress={progress} />;
   return (
     <HomeLayout>
       <Carousel images={heroImages} />
@@ -42,7 +37,7 @@ function Home() {
           <h1 className="text-left text-gray-900 text-2xl font-semibold my-4 pl-4 border-l-2 border-l-gray-500">
             Dành cho bạn
           </h1>
-          <div className="w-full grid grid-cols-4 mb-4 gap-8 px-20">
+          <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4 gap-8 md:px-20">
             {products?.map((product: any) => (
               <ProductItem product={product} />
             ))}

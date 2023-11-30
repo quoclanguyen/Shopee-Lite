@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Rate } from "antd";
+import { Rate, Tag } from "antd";
 import React, { useState } from "react";
-import { displayCurrencyVND } from "../utils";
-import { Tag } from "antd";
 import { FaShoppingCart } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addItem } from "../store/reducer/cart";
-import { Product } from "../interfaces";
+import { Cart, Product } from "../interfaces";
+import { displayCurrencyVND } from "../utils";
+import { addItem, cartSelector } from "../store/reducer/cart";
+import clsx from "clsx";
 
 interface ProductItemProps {
   product: Product;
@@ -17,6 +17,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const cartItems = useSelector(cartSelector);
   const renderTag = (tag: string) => {
     switch (tag) {
       case "new":
@@ -29,7 +30,9 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         return <Tag color="#40f23a">Mới</Tag>;
     }
   };
-  console.log({ product });
+  const isProductInCart = cartItems.find(
+    (item: Cart) => item.product.id === product.id
+  );
   return (
     <div
       key={product.id}
@@ -40,17 +43,26 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
     >
       {showCart && (
         <FaShoppingCart
-          className="absolute right-2 top-2 bg-transparent text-gray-400 cursor-pointer fade-in text-2xl"
+          className={clsx(
+            "absolute right-2 top-2 bg-transparent text-gray-400 cursor-pointer fade-in text-2xl",
+            {
+              "text-orange-500": isProductInCart,
+            }
+          )}
           onClick={(event) => {
+            const cart: Cart = {
+              product,
+              quantity: 1,
+            };
             event.stopPropagation();
-            dispatch(addItem(product));
+            dispatch(addItem(cart));
           }}
         />
       )}
       <img
         src={product.image}
         alt={product.title}
-        className="h-[150px] object-cover pb-2"
+        className="h-[150px] w-[200px] object-contain pb-2"
       />
       <div className="p-2 border-t-gray-100 border-t-2 card">
         <h1 className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 ">

@@ -8,7 +8,7 @@ function HomeLayout(props: HomeLayoutProps) {
   return (
     <div className="w-[calc(100vw-15px)] h-full">
       <Header />
-      <main className="min-h-screen h-full ">{props.children}</main>
+      <main className="min-h-screen h-full bg-gray-200">{props.children}</main>
       <Footer />
     </div>
   );

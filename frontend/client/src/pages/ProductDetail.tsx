@@ -9,42 +9,23 @@ import { displayCurrencyVND } from "../utils";
 import HomeLayout from "../layouts/HomeLayout";
 import QuantityInput from "../components/QuantityInput";
 import { useSelector } from "react-redux";
-import { cartSelector } from "../store/reducer/cart";
+import cart, { cartSelector } from "../store/reducer/cart";
 import { Product } from "../interfaces";
 
-interface ProductDetailProps {
-  image?: string;
-  title?: string;
-  price?: number;
-  rating?: number;
-}
-
-const ProductDetail: React.FC<ProductDetailProps> = ({
-  image,
-  title,
-  price,
-  rating,
-}) => {
+const ProductDetail = () => {
   const { id } = useParams();
-  const { isLoaded, progress, showPage } = useLoading({
-    selector: ".product-detail",
-  });
   const { data: product, isLoading } = useFindProductById(id || "");
   const cartItems = useSelector(cartSelector);
-  const currentProduct = cartItems.filter(
-    (product: Product) => product.id == id
-  );
-  console.log("cartItems: ", cartItems);
-  console.log("currentProduct: ", currentProduct);
-  console.log("Length: ", currentProduct.length);
-  if (!showPage) return <Loading isLoaded={isLoaded} progress={progress} />;
-  if (isLoading) return <Loading isLoaded={isLoaded} progress={progress} />;
+  const foundItem = cartItems.find((item) => item.product.id == id) ?? {
+    product: product,
+    quantity: 0,
+  };
   return (
     <HomeLayout>
-      <div className="md:flex px-4 my-4">
+      <div className="md:flex px-4 py-4 max-h-full">
         <div className="md:flex-shrink-0">
           <img
-            className="h-[300px] w-[300px] object-cover border-2 border-gray-100"
+            className="h-[300px] w-[300px] object-contain border-4 border-orange-500"
             src={product?.image}
             alt={product?.title}
           />
@@ -67,8 +48,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </span>
           </div>
           <QuantityInput
-            initialQuantity={currentProduct.length}
-            product={product}
+            initialQuantity={foundItem?.quantity || 0}
+            hasLabel
+            cart={foundItem}
           />
           <div className="flex justify-start gap-x-4 items-center my-4 outline-none">
             <button className="rounded-none px-4 py-2 bg-amber-400 text-white w-[20vw] box-border">

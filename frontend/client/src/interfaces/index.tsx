@@ -15,6 +15,10 @@ export interface Product {
   image: string;
   tag?: string; // Optional tag
 }
+export interface Cart {
+  product: Product;
+  quantity: number;
+}
 export interface Category {
   icon: IconType;
   label: string;
