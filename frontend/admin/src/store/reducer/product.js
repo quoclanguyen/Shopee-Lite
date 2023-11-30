@@ -12,7 +12,6 @@ const productSlice = createSlice({
     setProduct: (state, {payload}) => {
       state.product = payload;
     }
-
   }
 });
 

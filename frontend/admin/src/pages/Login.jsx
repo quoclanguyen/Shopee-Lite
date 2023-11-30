@@ -15,7 +15,6 @@ const Login = () => {
   const { handleSubmit, control, formState: { errors } } = useForm();
   const onSubmit = async (data) => {
     const response = await login(data);
-    console.log({ response })
     if (response.message === "OK") {
       toast.success('Đăng nhập thành công!')
       const token = response.metadata.tokens.accessToken

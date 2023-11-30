@@ -1,70 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import storage from "../firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
-import { getCurrentDateAsString } from '../utils';
+import { message } from "antd";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { clothSize } from '../constants';
-const ProductForm = ({record, isEditForm}) => {
+import storage from "../firebase";
+import { createNewProduct, updateProduct } from '../services/product';
+import { getCurrentDateAsString } from '../utils';
+const ProductForm = ({ record, isEditForm, methods }) => {
+    const [messageApi, contextHolder] = message.useMessage();
     const { handleSubmit, control, register, getValues, watch, reset, setValue } = useForm({
-        defaultValues: isEditForm ? record : null,
-        mode: 'onBlur'
+        defaultValues: null
     });
     const values = getValues();
-    console.log("Values: ", values)
-    console.log("Record: ", record)
-    // useEffect(()=>{
-    //     if(record){
-    //       switch(record.product_type){
-    //         case "Electronics": {
-    //             setValue("product_name", record.product_name)
-    //             setValue("product_price", record.product_price)
-    //             setValue("product_quantity", record.product_quantity)
-    //             setValue("product_thumb", record.product_thumb)
-    //             setValue("product_type", record.product_type);
-    //             setValue("product_attributes.manufacturer", record.product_attributes.manufacturer);
-    //             setValue("product_attributes.model", record.product_attributes.model);
-    //             setValue("product_attributes.color", record.product_attributes.color);
-    //             setValue("product_attributes.brand", null);
-    //             setValue("product_attributes.size", null);
-    //             setValue("product_attributes.material", null);
-    //             break;
-    //         }
-    //         case "Furniture": {
-    //             setValue("product_name", record.product_name)
-    //             setValue("product_price", record.product_price)
-    //             setValue("product_quantity", record.product_quantity)
-    //             setValue("product_thumb", record.product_thumb)
-    //             setValue("product_type", record.product_type);
-
-    //             break;
-    //         }
-    //         case "Clothes": {
-    //             setValue("product_attributes.manufacturer", null);
-    //             setValue("product_attributes.model", null);
-    //             setValue("product_attributes.color", null);
-    //             setValue("product_name", record.product_name)
-    //             setValue("product_price", record.product_price)
-    //             setValue("product_quantity", record.product_quantity)
-    //             setValue("product_thumb", record.product_thumb)
-    //             setValue("product_type", record.product_type);
-    //             setValue("product_attributes.brand", record.product_attributes.brand);
-    //             setValue("product_attributes.size", record.product_attributes.size);
-    //             setValue("product_attributes.material", record.product_attributes.material);
-    //             break;
-    //         }
-    //       }
-    //     }
-    // },[record])
     watch();
- 
-    const [product, setProduct] = useState(null)
     const handleReset = () => {
         reset();
     };
-    const [imageUrl, setImageUrl] = useState("")
+    useEffect(()=>{
+        if(record){
+            for (const [key, value] of Object.entries(record)) {
+                setValue(key, value);
+              }
+        } else {
+            reset()
+        }
+    },[record, isEditForm])
+    // console.log({record, values, isEditForm})
     const onSubmit = (data) => {
-        const { product_name, product_description, product_quantity, product_price, product_thumb, product_type } = data;
-        console.log({data})
+        const { product_thumb } = data;
+
         const storageRef = ref(storage, `/products/product-${getCurrentDateAsString()}`);
         const uploadTask = uploadBytesResumable(storageRef, product_thumb);
         new Promise((resolve, reject) => {
@@ -74,9 +38,7 @@ const ProductForm = ({record, isEditForm}) => {
                     const percent = Math.round(
                         (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                     );
-
                     // update progress
-                    setPercentage(percent);
                 },
                 (err) => {
                     console.log(err);
@@ -85,20 +47,29 @@ const ProductForm = ({record, isEditForm}) => {
                 async () => {
                     try {
                         const url = await getDownloadURL(uploadTask.snapshot.ref);
-                        setProduct({
-                            product_name,
-                            product_thumb,
-                            product_description,
-                            product_price,
-                            product_quantity,
-                            product_type,
-                            product_attributes: {
-                                brand: 'Local brand',
-                                size: 'XL',
-                                material: 'Cotton',
-                            },
-                        })
-                        resolve(url);
+                        const product = { ...data, product_thumb: url }
+                        console.log({url})
+                        if(url){
+                            const response = isEditForm ? await updateProduct(product._id, product) : await createNewProduct(product)
+                            console.log({response})
+                            resolve(url);
+                            onCloseModal(true)
+                            const key = 'creating';
+                            messageApi.open({
+                                key,
+                                type: 'loading',
+                                content: 'Đang xử lý...',
+                            });
+                            if (response.statusText === "OK") {
+                                messageApi.open({
+                                    key,
+                                    type: 'success',
+                                    content: isEditForm ? 'Cập nhật sản phẩM thành công': 'Tạo sản phẩm mới thành công!',
+                                    duration: 3,
+                                });
+                            }
+                        }                       
+                        
 
                     }
                     catch (error) {
@@ -110,47 +81,46 @@ const ProductForm = ({record, isEditForm}) => {
             );
         })
     };
-    console.log({ product })
+
     function renderType() {
         const category = getValues("product_type");
-        console.log({category})
         switch (category) {
             case "Electronics": return <div class="w-full flex gap-x-4 items-center">
-            <div className='w-full'>
-                <label>Hãng</label>
-                <input
-                    type="text"
-                    id="product_attributes.manufacturer"
-                    name="product_attributes.manufacturer"
-                    {...register('product_attributes.manufacturer', { required: true, min: 1 })}
-                    className="p-2 border rounded-md w-full"
-                />
-            </div>
+                <div className='w-full'>
+                    <label>Hãng</label>
+                    <input
+                        type="text"
+                        id="product_attributes.manufacturer"
+                        name="product_attributes.manufacturer"
+                        {...register('product_attributes.manufacturer', { required: true, min: 1 })}
+                        className="p-2 border rounded-md w-full"
+                    />
+                </div>
 
-            <div className='w-full'>
+                <div className='w-full'>
 
-                <label>Dòng</label>
-                <input
-                    type="text"
-                    id="product_attributes.model"
-                    name="product_attributes.model"
-                    {...register('product_attributes.model', { required: true, min: 1 })}
-                    className="p-2 border rounded-md w-full"
-                />
-            </div>
-            <div className='w-full'>
+                    <label>Dòng</label>
+                    <input
+                        type="text"
+                        id="product_attributes.model"
+                        name="product_attributes.model"
+                        {...register('product_attributes.model', { required: true, min: 1 })}
+                        className="p-2 border rounded-md w-full"
+                    />
+                </div>
+                <div className='w-full'>
 
-                <label>Màu sắc</label>
-                <input
-                    type="text"
-                    id="product_attributes.color"
-                    name="product_attributes.color"
-                    {...register('product_attributes.color', { required: true, min: 1 })}
-                    className="p-2 border rounded-md w-full"
-                />
-            </div>
+                    <label>Màu sắc</label>
+                    <input
+                        type="text"
+                        id="product_attributes.color"
+                        name="product_attributes.color"
+                        {...register('product_attributes.color', { required: true, min: 1 })}
+                        className="p-2 border rounded-md w-full"
+                    />
+                </div>
 
-        </div>;;
+            </div>;;
             case "Furniture": return <div class="w-full flex gap-x-4 items-center">
 
             </div>;
@@ -199,6 +169,7 @@ const ProductForm = ({record, isEditForm}) => {
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto">
+            {contextHolder}
             <label htmlFor="product_name" className="block text-sm font-medium text-gray-600">
                 Tên sản phẩm:
             </label>

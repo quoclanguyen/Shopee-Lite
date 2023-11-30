@@ -3,8 +3,19 @@ export const ProductEndpoint = {
     url: "/product/published/all",
     method: "GET",
   },
-  findOne: (id) => ({
+  createNewProduct: (data) => ({
+    url: "/product",
+    method: "POST",
+    data
+  }),
+  updateProduct: (id, data) => ({
     url: `/product/${id}`,
-    method: "GET",
+    method: "PATCH",
+    data
+  }),
+  deleteProduct: (id, data) => ({
+    url: `/product/${id}`,
+    method: "PATCH",
+    data
   })
 };

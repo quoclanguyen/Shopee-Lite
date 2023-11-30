@@ -9,10 +9,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const shop = useSelector(shopSelector);
   return (
-    <header className="bg-gray-400 text-white p-4 flex justify-between items-center w-full">
-      <div>
-        <h1 className="text-2xl font-bold">Quản lý shop</h1>
-      </div>
+    <header className="bg-gray-400 text-white p-4 flex justify-end items-center w-full">
       <Popover placement="bottomLeft" content={
         <ul className="min-w-max">
           <li className='menu-item'>
