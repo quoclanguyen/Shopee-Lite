@@ -8,39 +8,29 @@ import { Rate } from "antd";
 import { displayCurrencyVND } from "../utils";
 import HomeLayout from "../layouts/HomeLayout";
 import QuantityInput from "../components/QuantityInput";
+import { useSelector } from "react-redux";
+import cart, { cartSelector } from "../store/reducer/cart";
+import { Product } from "../interfaces";
 
-interface ProductDetailProps {
-  image?: string;
-  title?: string;
-  price?: number;
-  rating?: number;
-}
-
-const ProductDetail: React.FC<ProductDetailProps> = ({
-  image,
-  title,
-  price,
-  rating,
-}) => {
+const ProductDetail = () => {
   const { id } = useParams();
-  const { isLoaded, progress, showPage } = useLoading({
-    selector: ".product-detail",
-  });
   const { data: product, isLoading } = useFindProductById(id || "");
-  console.log({ product });
-  if (!showPage) return <Loading isLoaded={isLoaded} progress={progress} />;
-  if (isLoading) return <Loading isLoaded={isLoaded} progress={progress} />;
+  const cartItems = useSelector(cartSelector);
+  const foundItem = cartItems.find((item) => item.product.id == id) ?? {
+    product: product,
+    quantity: 0,
+  };
   return (
     <HomeLayout>
-      <div className="md:flex px-4 my-4">
+      <div className="md:flex px-4 py-4 max-h-full">
         <div className="md:flex-shrink-0">
           <img
-            className="h-[300px] w-[300px] object-cover border-2 border-gray-100"
+            className="h-[300px] w-[300px] object-contain border-4 border-orange-500"
             src={product?.image}
             alt={product?.title}
           />
         </div>
-        <div className="p-8">
+        <div className="px-8">
           <div className="uppercase tracking-wide text-gray-800 text-lg font-semibold">
             {product?.title}
           </div>
@@ -57,8 +47,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               {product?.rating.count} đánh giá
             </span>
           </div>
-          <QuantityInput />
-          <div className="flex justify-center gap-x-4 items-center my-4 outline-none">
+          <QuantityInput
+            initialQuantity={foundItem?.quantity || 0}
+            hasLabel
+            cart={foundItem}
+          />
+          <div className="flex justify-start gap-x-4 items-center my-4 outline-none">
             <button className="rounded-none px-4 py-2 bg-amber-400 text-white w-[20vw] box-border">
               Mua ngay
             </button>
