@@ -20,24 +20,26 @@ const ProductDetail = () => {
     product: product,
     quantity: 0,
   };
+  console.log({ product });
+  if (isLoading) return <p>Loading...</p>;
   return (
     <HomeLayout>
       <div className="md:flex px-4 py-4 max-h-full">
         <div className="md:flex-shrink-0">
           <img
             className="h-[300px] w-[300px] object-contain border-4 border-orange-500"
-            src={product?.image}
-            alt={product?.title}
+            src={product?.product_thumb}
+            alt={product?.product_name}
           />
         </div>
         <div className="px-8">
           <div className="uppercase tracking-wide text-gray-800 text-lg font-semibold">
-            {product?.title}
+            {product?.product_name}
           </div>
           <p className="mt-2 text-orange-500 font-medium text-2xl">
-            {displayCurrencyVND(product?.price)}
+            {displayCurrencyVND(product?.product_price)}
           </p>
-          <div className="mt-2">
+          {/*  <div className="mt-2">
             <Rate
               disabled
               defaultValue={product?.rating.rate}
@@ -46,7 +48,7 @@ const ProductDetail = () => {
             <span className="text-sky-600 text-sm ml-4">
               {product?.rating.count} đánh giá
             </span>
-          </div>
+          </div> */}
           <QuantityInput
             initialQuantity={foundItem?.quantity || 0}
             hasLabel

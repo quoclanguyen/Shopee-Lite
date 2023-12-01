@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSelector } from "react-redux";
 import CartItem from "../components/CartItem";
 import { Cart } from "../interfaces";
@@ -10,13 +11,13 @@ import { Empty } from "antd";
 function CartDetail() {
   const cart = useSelector(cartSelector);
   const cartQuantity = useSelector(cartTotalSelector);
-  const extractedItems = cart.map((item) => ({
-    price: item.product.price,
-    quantity: item.quantity,
+  const extractedItems = cart.map((item: Cart) => ({
+    product_price: item?.product.product_price,
+    quantity: item?.quantity,
   }));
   const totalPrice = _.sumBy(
     extractedItems,
-    (item) => item.price * item.quantity
+    (item) => item?.product_price * item?.quantity
   );
   console.log("Cart Detail:", cart);
   return (
