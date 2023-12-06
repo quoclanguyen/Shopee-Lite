@@ -31,15 +31,15 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
     }
   };
   const isProductInCart = cartItems.find(
-    (item: Cart) => item.product.id === product.id
+    (item: Cart) => item.product._id === product._id
   );
   return (
     <div
-      key={product.id}
+      key={product._id}
       className="bg-white rounded-md shadow-md overflow-hidden flex-grow relative cursor-pointer hover:scale-110 duration-100"
       onMouseEnter={() => setShowCart(true)}
       onMouseLeave={() => setShowCart(false)}
-      onClick={() => navigate(`/product/${product.id}`)}
+      onClick={() => navigate(`/product/${product._id}`)}
     >
       {showCart && (
         <FaShoppingCart
@@ -60,26 +60,26 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         />
       )}
       <img
-        src={product.image}
-        alt={product.title}
+        src={product.product_thumb}
+        alt={product.product_name}
         className="h-[150px] w-[200px] object-contain pb-2"
       />
       <div className="p-2 border-t-gray-100 border-t-2 card">
         <h1 className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 ">
-          {renderTag(product.tag)}
-          {product.title}
+          {renderTag("new")}
+          {product.product_name}
         </h1>
         <h1 className="text-orange-500 font-medium text-2xl">
-          {displayCurrencyVND(product.price)}
+          {displayCurrencyVND(product.product_price)}
         </h1>
         <div>
-          <Rate
+          {/* <Rate
             disabled
             defaultValue={product.rating.rate}
             style={{ fontSize: 10 }}
-          />
+          /> */}
           <span className="text-gray-400 text-sm ml-4">
-            ({product.rating.count})
+            {/* ({product.rating.count}) */}
           </span>
         </div>
       </div>

@@ -51,6 +51,13 @@ const Header: React.FC<HeaderProps> = ({
       window.removeEventListener("scroll", handleScroll);
     };
   }, [pathname]);
+  // useEffect(() => {
+  //   setScrollDirection("up");
+  //   return () => {
+  //     setScrollDirection("original");
+  //     window.scrollTo(0, 0);
+  //   };
+  // }, [totalQuantity]);
   return (
     <header
       className={`w-full top-0 z-50 transition-all duration-300 ease-in-out px-4 py-2 bg-white shadow-lg text-black block 

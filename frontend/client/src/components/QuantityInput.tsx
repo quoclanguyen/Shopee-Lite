@@ -1,38 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import { Cart, Product } from "../interfaces";
-import {
-  addItem,
-  decreaseItem,
-  increaseItem,
-  removeItem,
-} from "../store/reducer/cart";
+import { Cart } from "../interfaces";
+import { decreaseItem, increaseItem } from "../store/reducer/cart";
 
 interface QuantityInputProps {
   cart: Cart;
-  initialQuantity: number;
+  quantity: number;
   hasLabel: boolean;
 }
 const QuantityInput: React.FC<QuantityInputProps> = ({
   cart,
-  initialQuantity,
+  quantity,
   hasLabel,
 }) => {
-  const [quantity, setQuantity] = useState<number>(initialQuantity);
   console.log({
     cart,
-    initialQuantity,
+    quantity,
     hasLabel,
   });
   const dispatch = useDispatch();
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
     dispatch(increaseItem(cart));
   };
 
   const decreaseQuantity = () => {
     if (quantity > 0) {
-      setQuantity(quantity - 1);
       dispatch(decreaseItem(cart));
     }
   };

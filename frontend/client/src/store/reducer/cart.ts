@@ -15,9 +15,9 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addItem: (state, action: PayloadAction<any>) => {
-            const productId = action.payload.product.id;
-            const existingItemIndex = state.items.findIndex(item => item.product.id === productId);
+        addItem: (state, action: PayloadAction<Cart>) => {
+            const productId = action.payload.product._id;
+            const existingItemIndex = state.items.findIndex((item: Cart) => item.product._id === productId);
             if (existingItemIndex !== -1) {
                 state.items.splice(existingItemIndex, 1);
                 state.totalQuantity -= 1;
@@ -26,9 +26,9 @@ const cartSlice = createSlice({
                 state.totalQuantity += 1;
             }
         },
-        increaseItem: (state, action: PayloadAction<any>) => {
-            const productId = action.payload.product.id;
-            const existingItemIndex = state.items.findIndex(item => item.product.id === productId);
+        increaseItem: (state, action: PayloadAction<Cart>) => {
+            const productId = action.payload.product._id;
+            const existingItemIndex = state.items.findIndex((item: Cart) => item.product._id === productId);
             console.log({ existingItemIndex })
             if (existingItemIndex !== -1) {
                 if (state.items[existingItemIndex].quantity < 10) {
@@ -44,10 +44,10 @@ const cartSlice = createSlice({
 
         },
         decreaseItem: (state, action: PayloadAction<any>) => {
-            const productId = action.payload.product.id;
-            const existingItemIndex = state.items.findIndex(item => item.product.id === productId);
+            const productId = action.payload.product._id;
+            const existingItemIndex = state.items.findIndex(item => item.product._id === productId);
+            state.totalQuantity -= 1;
             if (state.items[existingItemIndex].quantity > 0) {
-                state.totalQuantity -= 1;
                 state.items[existingItemIndex].quantity -= 1;
             }
             if (state.items[existingItemIndex].quantity == 0) {

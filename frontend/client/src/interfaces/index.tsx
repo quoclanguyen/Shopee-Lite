@@ -4,16 +4,18 @@ export interface RouteProps {
   isAuth: boolean;
 }
 export interface Product {
-  id: number | string;
-  title: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  price: number;
-  productOldPrice?: number; // Optional old price
-  image: string;
-  tag?: string; // Optional tag
+  _id: string;
+  product_name: string;
+  product_price: number;
+  product_thumb: string;
+  // rating: {
+  //   rate: number;
+  //   count: number;
+  // };
+  // price: number;
+  // productOldPrice?: number; // Optional old price
+  // image: string;
+  // tag?: string; // Optional tag
 }
 export interface Cart {
   product: Product;

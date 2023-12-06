@@ -32,32 +32,32 @@ const CartItem: React.FC<CartItemProps> = ({ cart }) => {
     >
       <div className="flex items-start">
         <img
-          src={cart.product.image}
+          src={cart.product.product_thumb}
           className="w-[150px] h-[150px] border-2 border-orange-500 object-contain"
         />
         <div className="ml-4">
           <h1
             className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 hover:text-sky-500 hover:underline"
-            onClick={() => navigate("/product/" + cart.product.id)}
+            onClick={() => navigate("/product/" + cart.product._id)}
           >
-            {renderTag(cart.product?.tag)}
-            {cart.product.title}
+            {/* {renderTag(cart.product?.tag)} */}
+            {cart.product.product_name}
           </h1>
           <p className="mt-2 text-orange-500 font-medium text-2xl">
-            {displayCurrencyVND(cart.product?.price)}
+            {displayCurrencyVND(cart.product?.product_price)}
           </p>
           <div className="mt-2">
-            <Rate
+            {/* <Rate
               disabled
               defaultValue={cart.product?.rating.rate}
               style={{ fontSize: 10 }}
-            />
-            <span className="text-sky-600 text-sm ml-4">
+            /> */}
+            {/* <span className="text-sky-600 text-sm ml-4">
               {cart.product?.rating.count} đánh giá
-            </span>
+            </span> */}
           </div>
           <QuantityInput
-            initialQuantity={cart.quantity}
+            quantity={cart.quantity}
             cart={cart}
             hasLabel={false}
           />

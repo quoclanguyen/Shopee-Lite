@@ -5,8 +5,7 @@ import { ProductEndpoint } from "../endpoints/product";
 const findAllProducts = async () => {
     try {
         const productResponse = await axiosClient.request(ProductEndpoint.findAll);
-        console.log({ productResponse })
-        return productResponse;
+        return productResponse.metadata;
 
     } catch (err) {
         console.log("Error fetching")
@@ -17,7 +16,7 @@ const findAllProducts = async () => {
 const findProductById = async (id: string) => {
     try {
         const productResponse = await axiosClient.request(ProductEndpoint.findById(id));
-        return productResponse;
+        return productResponse.metadata;
     } catch (err) {
         console.log("Error fetching")
         console.log(err)

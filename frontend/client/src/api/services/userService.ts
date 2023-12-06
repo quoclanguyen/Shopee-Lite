@@ -6,7 +6,6 @@ import { UserEndpoint } from "../endpoints/user";
 const findAllUsers = async () => {
     try {
         const userResponse = await axiosClient.request(UserEndpoint.findAll);
-        console.log({ userResponse })
         return userResponse;
 
     } catch (err) {

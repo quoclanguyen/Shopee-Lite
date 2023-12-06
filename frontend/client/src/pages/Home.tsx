@@ -21,6 +21,8 @@ interface ProductProps {
 }
 function Home() {
   const { data: products, isLoading } = useFindAllProduct();
+  console.log({ products });
+  if (isLoading) return <p>Loading...</p>;
   return (
     <HomeLayout>
       <Carousel images={heroImages} />
