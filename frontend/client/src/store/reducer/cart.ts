@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { Cart } from '../../interfaces';
+import { sumBy } from 'lodash';
 
 interface CartState {
     items: Cart[];
@@ -20,11 +21,10 @@ const cartSlice = createSlice({
             const existingItemIndex = state.items.findIndex((item: Cart) => item.product._id === productId);
             if (existingItemIndex !== -1) {
                 state.items.splice(existingItemIndex, 1);
-                state.totalQuantity -= 1;
             } else {
                 state.items.push(action.payload);
-                state.totalQuantity += 1;
             }
+            state.totalQuantity = sumBy(state.items, 'quantity');
         },
         increaseItem: (state, action: PayloadAction<Cart>) => {
             const productId = action.payload.product._id;
@@ -32,13 +32,12 @@ const cartSlice = createSlice({
             console.log({ existingItemIndex })
             if (existingItemIndex !== -1) {
                 if (state.items[existingItemIndex].quantity < 10) {
-                    state.totalQuantity += 1;
                     state.items[existingItemIndex].quantity += 1;
                 }
             } else {
                 state.items.push(action.payload);
-                state.totalQuantity += 1;
             }
+            state.totalQuantity = sumBy(state.items, 'quantity');
 
 
 
@@ -46,13 +45,13 @@ const cartSlice = createSlice({
         decreaseItem: (state, action: PayloadAction<any>) => {
             const productId = action.payload.product._id;
             const existingItemIndex = state.items.findIndex(item => item.product._id === productId);
-            state.totalQuantity -= 1;
             if (state.items[existingItemIndex].quantity > 0) {
                 state.items[existingItemIndex].quantity -= 1;
             }
             if (state.items[existingItemIndex].quantity == 0) {
                 state.items.splice(existingItemIndex, 1);
             }
+            state.totalQuantity = sumBy(state.items, 'quantity');
 
         }
 

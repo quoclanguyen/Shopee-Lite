@@ -10,7 +10,7 @@ interface QuantityInputProps {
 }
 const QuantityInput: React.FC<QuantityInputProps> = ({
   cart,
-  quantity,
+  quantity = 0,
   hasLabel,
 }) => {
   console.log({
