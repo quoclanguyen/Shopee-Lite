@@ -53,6 +53,21 @@ const cartSlice = createSlice({
             }
             state.totalQuantity = sumBy(state.items, 'quantity');
 
+        },
+        selectAll: (state) => {
+            const allSelected = state.items.every((item) => item.selected)
+            const updatedCart = state.items.map((item) => ({ ...item, selected: !allSelected }));
+            state.items = updatedCart;
+        },
+        deselectAll: (state) => {
+            const updatedCart = state.items.map((item) => ({ ...item, selected: false }));
+            state.items = updatedCart;
+        },
+        selectOne: (state, action: PayloadAction<string>) => {
+            const updatedCart = state.items.map((item) =>
+                item.product._id === action.payload ? { ...item, selected: !item.selected } : item
+            );
+            state.items = updatedCart;
         }
 
     }
@@ -61,6 +76,6 @@ const cartSlice = createSlice({
 export const cartSelector = (state: any) => state.cart.items;
 export const cartTotalSelector = (state: any) => state.cart.totalQuantity;
 
-export const { addItem, increaseItem, decreaseItem } = cartSlice.actions
+export const { addItem, increaseItem, decreaseItem, selectAll, deselectAll, selectOne } = cartSlice.actions
 
 export default cartSlice.reducer

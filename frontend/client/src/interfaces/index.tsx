@@ -8,6 +8,8 @@ export interface Product {
   product_name: string;
   product_price: number;
   product_thumb: string;
+  product_ratingsAverage: number;
+  product_slug: string;
   // rating: {
   //   rate: number;
   //   count: number;
@@ -20,6 +22,7 @@ export interface Product {
 export interface Cart {
   product: Product;
   quantity: number;
+  selected: boolean;
 }
 export interface Category {
   icon: IconType;

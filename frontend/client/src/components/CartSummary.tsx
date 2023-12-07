@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { displayCurrencyVND } from "../utils";
-
+import { App } from "antd";
+import { useNavigate } from "react-router-dom";
 interface CartSummaryProps {
   total: number;
   cartQuantity: number;
 }
 function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const validCoupon = "1";
-  const shippingFee = 20000;
+  const shippingFee = 0;
   const maximumPrice = 150000;
   const percentageDiscount = 0.1;
   const [coupon, setCoupon] = useState("");
   const [showCoupon, setShowCoupon] = useState(false);
   const [isValidCoupon, setIsValidCoupon] = useState(false);
+  const navigate = useNavigate();
 
   const priceAfterDiscount = (
     originalPrice: number,
@@ -52,8 +54,9 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       ? priceAfterDiscount(originalPrice, percentage, maximumDiscount)
       : 0;
   };
+
   return (
-    <div className="bg-white rounded-md shadow-md p-4 w-[40vw]">
+    <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
       <div className="grid grid-cols-[2fr_auto] justify-between">
         <p className="text-gray-400 font-normal text-base leading-8">
@@ -69,7 +72,7 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
           {displayCurrencyVND(shippingFee)}
         </p>
       </div>
-      <div className="flex justify-center items-center">
+      {/* <div className="flex justify-center items-center">
         <input
           className="bg-gray-100 outline-none text-base text-gray-900 px-4 py-2 border border-gray-300"
           onChange={handleCoupon}
@@ -80,7 +83,7 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
         >
           Áp dụng
         </button>
-      </div>
+      </div> */}
       {showCoupon && renderCouponMessage(percentageDiscount, maximumPrice)}
       {isValidCoupon && (
         <div className="grid grid-cols-[2fr_auto] justify-between">
@@ -109,7 +112,10 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
           )}
         </span>
       </div>
-      <button className="rounded-none bg-orange-500 text-white font-semibold w-full">
+      <button
+        className="rounded-none bg-orange-500 text-white font-semibold w-full"
+        onClick={() => navigate("/shipping")}
+      >
         Xác nhận giỏ hàng ({cartQuantity})
       </button>
     </div>

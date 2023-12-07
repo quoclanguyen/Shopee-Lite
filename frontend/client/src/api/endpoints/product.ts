@@ -8,6 +8,10 @@ export const ProductEndpoint = {
         url: `/product/${id}`,
         method: "GET",
     }),
+    findBySlug: (slug: string) => ({
+        url: `/product/slug/${slug}`,
+        method: "GET",
+    }),
     createNewProduct: (data: any) => ({
         url: "/product",
         method: "POST",

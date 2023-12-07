@@ -28,7 +28,8 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
           </Route>
           <Route path="/" element={<Home />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
+          {/* <Route path="/product/:id" element={<ProductDetail />} /> */}
+          <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -36,10 +36,10 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   return (
     <div
       key={product._id}
-      className="bg-white rounded-md shadow-md overflow-hidden flex-grow relative cursor-pointer hover:scale-110 duration-100"
+      className="bg-white rounded-sm shadow-md overflow-hidden flex-grow relative cursor-pointer hover:scale-110 duration-100"
       onMouseEnter={() => setShowCart(true)}
       onMouseLeave={() => setShowCart(false)}
-      onClick={() => navigate(`/product/${product._id}`)}
+      onClick={() => navigate(`/product/${product.product_slug}`)}
     >
       {showCart && (
         <FaShoppingCart
@@ -53,6 +53,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
             const cart: Cart = {
               product,
               quantity: 1,
+              selected: false,
             };
             event.stopPropagation();
             dispatch(addItem(cart));
@@ -62,7 +63,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
       <img
         src={product.product_thumb}
         alt={product.product_name}
-        className="h-[150px] w-[200px] object-contain pb-2"
+        className="h-[200px] w-[200px] object-scale-down pb-2"
       />
       <div className="p-2 border-t-gray-100 border-t-2 card">
         <h1 className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 ">
@@ -73,11 +74,12 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
           {displayCurrencyVND(product.product_price)}
         </h1>
         <div>
-          {/* <Rate
+          <Rate
             disabled
-            defaultValue={product.rating.rate}
+            defaultValue={product.product_ratingsAverage}
             style={{ fontSize: 10 }}
-          /> */}
+            allowHalf
+          />
           <span className="text-gray-400 text-sm ml-4">
             {/* ({product.rating.count}) */}
           </span>

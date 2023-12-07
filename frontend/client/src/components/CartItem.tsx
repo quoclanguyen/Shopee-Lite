@@ -1,15 +1,22 @@
-import { Rate, Tag } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Tag } from "antd";
+import clsx from "clsx";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Cart } from "../interfaces";
 import { displayCurrencyVND } from "../utils";
 import QuantityInput from "./QuantityInput";
-import clsx from "clsx";
-import { useNavigate } from "react-router-dom";
+import Checkbox from "./Checkbox";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { useDispatch } from "react-redux";
+import { selectOne } from "../store/reducer/cart";
+
 interface CartItemProps {
   cart: Cart;
 }
 const CartItem: React.FC<CartItemProps> = ({ cart }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const renderTag = (tag: string) => {
     switch (tag) {
       case "new":
@@ -23,44 +30,40 @@ const CartItem: React.FC<CartItemProps> = ({ cart }) => {
     }
   };
   console.log({ cart });
+  const onChange = () => {
+    dispatch(selectOne(cart.product._id));
+  };
   return (
-    <div
-      className={clsx(
-        "bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 px-4 py-2 flex-grow",
-        { hidden: cart.quantity === 0 }
-      )}
-    >
-      <div className="flex items-start">
-        <img
-          src={cart.product.product_thumb}
-          className="w-[150px] h-[150px] border-2 border-orange-500 object-contain"
-        />
-        <div className="ml-4">
-          <h1
-            className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 hover:text-sky-500 hover:underline"
-            onClick={() => navigate("/product/" + cart.product._id)}
-          >
-            {/* {renderTag(cart.product?.tag)} */}
-            {cart.product.product_name}
-          </h1>
-          <p className="mt-2 text-orange-500 font-medium text-2xl">
-            {displayCurrencyVND(cart.product?.product_price)}
-          </p>
-          <div className="mt-2">
-            {/* <Rate
-              disabled
-              defaultValue={cart.product?.rating.rate}
-              style={{ fontSize: 10 }}
-            /> */}
-            {/* <span className="text-sky-600 text-sm ml-4">
-              {cart.product?.rating.count} đánh giá
-            </span> */}
-          </div>
-          <QuantityInput
-            quantity={cart.quantity}
-            cart={cart}
-            hasLabel={false}
+    <div className="flex items-center gap-x-4 p-2">
+      <Checkbox checked={cart.selected} onChange={onChange} />
+      <div
+        className={clsx(
+          "bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 px-4 py-2 flex-grow",
+          { hidden: cart.quantity === 0 }
+        )}
+      >
+        <div className="flex items-start">
+          <img
+            src={cart.product.product_thumb}
+            className="h-[100px] w-[100px] border-2 border-orange-500 object-contain"
           />
+          <div className="ml-4 flex flex-col justify-between">
+            <h1
+              className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 hover:text-sky-500 hover:underline"
+              onClick={() => navigate("/product/" + cart.product.product_slug)}
+            >
+              {/* {renderTag(cart.product?.tag)} */}
+              {cart.product.product_name}
+            </h1>
+            <p className="mt-2 text-orange-500 font-medium text-xl">
+              {displayCurrencyVND(cart.product?.product_price)}
+            </p>
+            <QuantityInput
+              quantity={cart.quantity}
+              cart={cart}
+              hasLabel={false}
+            />
+          </div>
         </div>
       </div>
     </div>
