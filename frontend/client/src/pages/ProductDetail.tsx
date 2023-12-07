@@ -1,5 +1,5 @@
 // ProductDetail.tsx
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useFindProductById } from "../api/services/productServices";
 import Loading from "../components/Loading";
@@ -16,11 +16,15 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: product, isLoading } = useFindProductById(id || "");
   const cartItems = useSelector(cartSelector);
-  const foundItem = cartItems.find((item) => item.product.id == id) ?? {
-    product: product,
-    quantity: 0,
-  };
-  console.log({ product });
+  const foundItem = useMemo(() => {
+    return (
+      cartItems.find((item) => item.product._id === id) ?? {
+        product: product,
+        quantity: 0,
+      }
+    );
+  }, [cartItems, id, product]);
+  console.log({ foundItem, cartItems });
   if (isLoading) return <p>Loading...</p>;
   return (
     <HomeLayout>
@@ -50,7 +54,7 @@ const ProductDetail = () => {
             </span>
           </div> */}
           <QuantityInput
-            initialQuantity={foundItem?.quantity || 0}
+            quantity={foundItem?.quantity}
             hasLabel
             cart={foundItem}
           />
