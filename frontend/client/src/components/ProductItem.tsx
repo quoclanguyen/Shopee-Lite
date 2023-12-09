@@ -9,6 +9,8 @@ import { Cart, Product } from "../interfaces";
 import { displayCurrencyVND } from "../utils";
 import { addItem, cartSelector } from "../store/reducer/cart";
 import clsx from "clsx";
+import { addProductToCart } from "../api/services/cartService";
+import { accountSelector } from "../store/reducer/auth";
 
 interface ProductItemProps {
   product: Product;
@@ -17,6 +19,7 @@ interface ProductItemProps {
 const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const account = useSelector(accountSelector);
   const cartItems = useSelector(cartSelector);
   const renderTag = (tag: string) => {
     switch (tag) {
@@ -67,12 +70,20 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
               "bg-red-500": isProductInCart,
             }
           )}
-          onClick={(event) => {
+          onClick={async (event) => {
             const cart: Cart = {
               product,
               quantity: 1,
               selected: false,
             };
+            const response = await addProductToCart({
+              userId: account?._id,
+              product: {
+                data: product,
+                quantity: 1,
+              },
+            });
+            console.log({ response });
             event.stopPropagation();
             dispatch(addItem(cart));
           }}

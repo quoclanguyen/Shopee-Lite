@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Header.tsx
-import { Popover } from "antd";
-import clsx from "clsx";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { Avatar, Popover, Tooltip } from "antd";
+import React, { useLayoutEffect, useState } from "react";
 import { BsCart2 } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,6 +9,7 @@ import { useFindAllProduct } from "../api/services/productServices";
 import { setLogout } from "../store/reducer/auth";
 import { cartTotalSelector } from "../store/reducer/cart";
 import SearchField from "./SearchField";
+import { generateRandomColor, getTheFirstLetter } from "../utils";
 
 interface HeaderProps {
   logoUrl?: string;
@@ -21,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   avatarUrl = "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg",
 }) => {
   const token = localStorage.getItem("accessToken");
+  const user = JSON.parse(localStorage.getItem("account"));
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const totalQuantity = useSelector(cartTotalSelector);
@@ -113,11 +114,17 @@ const Header: React.FC<HeaderProps> = ({
                 </ul>
               }
             >
-              <img
-                src={avatarUrl}
-                alt="Avatar"
-                className="h-8 w-8 rounded-full"
-              />
+              <Tooltip title={user?.name} placement="left">
+                <Avatar
+                  style={{
+                    backgroundColor: "#f97316",
+                    verticalAlign: "middle",
+                  }}
+                  size="large"
+                >
+                  {getTheFirstLetter(user?.name)}
+                </Avatar>
+              </Tooltip>
             </Popover>
           ) : (
             <p

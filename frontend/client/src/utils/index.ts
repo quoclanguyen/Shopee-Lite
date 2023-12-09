@@ -47,3 +47,32 @@ export function getDayPeriod() {
         return 'buổi tối';
     }
 }
+export function getTheFirstLetter(text: string) {
+    // Split the text into words
+    const words = text.split(" ");
+
+    // Get the last word
+    const lastWord = words[words.length - 1];
+
+    // Get the first letter of the last word
+    const firstLetter = lastWord.charAt(0);
+
+    return firstLetter;
+
+}
+export function generateRandomColor() {
+    // Generate random values for red, green, and blue
+    const red = Math.floor(Math.random() * 256); // Random value between 0 and 255
+    const green = Math.floor(Math.random() * 256); // Random value between 0 and 255
+    const blue = Math.floor(Math.random() * 256); // Random value between 0 and 255
+
+    // Convert the decimal values to hexadecimal
+    const redHex = red.toString(16).padStart(2, '0'); // Ensure two digits
+    const greenHex = green.toString(16).padStart(2, '0'); // Ensure two digits
+    const blueHex = blue.toString(16).padStart(2, '0'); // Ensure two digits
+
+    // Concatenate the hex values to form the color string
+    const colorHex = `#${redHex}${greenHex}${blueHex}`;
+
+    return colorHex;
+}

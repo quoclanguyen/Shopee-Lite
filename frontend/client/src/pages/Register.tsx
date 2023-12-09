@@ -3,7 +3,9 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { LoginDto, RegisterDto } from "../interfaces";
+import PasswordField from "../components/PasswordField";
+import { RegisterDto, RegisterFormDto } from "../interfaces";
+import { registerNewAccount } from "../api/services/authService";
 
 const Register = () => {
   // const dispatch = useDispatch();
@@ -13,9 +15,18 @@ const Register = () => {
     formState: { errors },
     watch,
   } = useForm<RegisterDto>();
-  const onSubmit: SubmitHandler<LoginDto> = async (data) => {
+
+  const onSubmit: SubmitHandler<RegisterFormDto> = async (data) => {
     // const response = await login(data);
-    console.log({ data });
+    const registerDto: RegisterDto = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: "USER",
+    };
+    console.log({ registerDto });
+    const response = await registerNewAccount(registerDto);
+    console.log({ response });
     // if (response.message === "OK") {
     //   toast.success("Đăng nhập thành công!");
     //   const token = response.metadata.tokens.accessToken;
@@ -114,11 +125,7 @@ const Register = () => {
                   },
                 }}
                 render={({ field }: { field: any }) => (
-                  <input
-                    type="password"
-                    {...field}
-                    className="text-gray-900 w-full p-2 border border-gray-300 rounded-sm bg-white focus:border-sky-500 focus:border-2 focus:outline-none"
-                  />
+                  <PasswordField field={field} />
                 )}
               />
               <p className="text-red-500 text-xs mt-1">
@@ -140,22 +147,18 @@ const Register = () => {
                     "Xác nhận mật khẩu không khớp.",
                 }}
                 render={({ field }: { field: any }) => (
-                  <input
-                    {...field}
-                    type="password"
-                    className="w-full p-2 border border-gray-300 rounded-sm bg-white text-gray-900 focus:border-sky-500 focus:border-2 focus:outline-none"
-                  />
+                  <PasswordField field={field} />
                 )}
               />
               <p className="text-red-500 text-xs mt-1">
-                {errors?.password && errors?.password.message}
+                {errors?.confirmPassword && errors?.confirmPassword.message}
               </p>
             </div>
             <button
               type="submit"
               className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 w-full mb-5"
             >
-              Đăng nhập
+              Đăng ký
             </button>
           </form>
           <p className="text-center text-gray-900">

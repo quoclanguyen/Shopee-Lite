@@ -1,7 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IconType } from "react-icons";
 
+export interface LoginDto {
+  email: string;
+  password: string;
+}
 export interface RouteProps {
   isAuth: boolean;
+}
+export interface AddToCartDto {
+  userId: string;
+  product: any;
 }
 export interface Product {
   _id: string;
@@ -28,11 +37,22 @@ export interface Category {
   icon: IconType;
   label: string;
 }
-export interface LoginDto {
+export interface LoginFormDto {
   email: string;
   password: string;
 }
+export interface LoginDto {
+  email: string;
+  password: string;
+  role: string;
+}
 export interface RegisterDto {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+}
+export interface RegisterFormDto {
   name: string;
   email: string;
   password: string;
