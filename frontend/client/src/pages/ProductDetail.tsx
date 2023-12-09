@@ -4,100 +4,141 @@ import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { useFindProductBySlug } from "../api/services/productServices";
+import {
+  useFindProductBySlug,
+  useFindProductsByShopId,
+} from "../api/services/productServices";
 import QuantityInput from "../components/QuantityInput";
 import { Cart } from "../interfaces";
 import HomeLayout from "../layouts/HomeLayout";
 import { addItem, cartSelector } from "../store/reducer/cart";
 import { displayCurrencyVND } from "../utils";
 import { renderAttributesByType } from "../helper";
+import Skeleton from "react-loading-skeleton";
+import SkeletonNode from "antd/es/skeleton/Node";
+import { usefindShopById } from "../api/services/userService";
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const { data: product, isLoading } = useFindProductBySlug(slug || "");
+  const { data: shop, isLoading: shopLoading } = usefindShopById(
+    product?.product_shop
+  );
+  const { data: products } = useFindProductsByShopId(product?.product_shop);
+  console.log({ products });
   const cartItems = useSelector(cartSelector);
   const isProductInCart = useMemo(() => {
-    return cartItems.find((item: Cart) => item.product._id === product._id);
+    return cartItems.find((item: Cart) => item.product?._id === product?._id);
   }, [product, cartItems]);
   const dispatch = useDispatch();
   const foundItem = useMemo(() => {
+    if (!product) {
+      return { product: null, quantity: 0 };
+    }
     return (
-      cartItems.find((item) => item.product._id === product._id) ?? {
+      cartItems.find((item) => item.product?._id === product?._id) ?? {
         product: product,
         quantity: 0,
       }
     );
   }, [cartItems, slug, product]);
   console.log({ product });
-  if (isLoading) return <p>Loading...</p>;
   return (
     <HomeLayout>
       <div className="m-4">
-        <Breadcrumb
-          className="mb-4"
-          items={[
-            {
-              title: (
-                <Link to="/">
-                  <div className="flex items-center justify-center gap-x-1">
-                    <FaHome />
-                    <span>Trang chủ</span>
-                  </div>
-                </Link>
-              ),
-            },
-            {
-              title: (
-                <Link to={`/category?=${product?.product_type}`}>
-                  {product?.product_type}
-                </Link>
-              ),
-            },
-            {
-              title: (
-                <Link to={`/product/${product?.product_slug}`}>
-                  {product?.product_name}
-                </Link>
-              ),
-            },
-          ]}
-        />
+        {isLoading ? (
+          ""
+        ) : (
+          <Breadcrumb
+            className="mb-4"
+            items={[
+              {
+                title: (
+                  <Link to="/">
+                    <div className="flex items-center justify-center gap-x-1">
+                      <FaHome />
+                      <span>Trang chủ</span>
+                    </div>
+                  </Link>
+                ),
+              },
+              {
+                title: (
+                  <Link to={`/category?=${product?.product_type}`}>
+                    {product?.product_type}
+                  </Link>
+                ),
+              },
+              {
+                title: (
+                  <Link to={`/product/${product?.product_slug}`}>
+                    {product?.product_name}
+                  </Link>
+                ),
+              },
+            ]}
+          />
+        )}
+
         <div className="md:flex p-4 max-h-full bg-white rounded-md">
           <div className="md:flex-shrink-0">
-            <img
-              className="h-[300px] w-[300px] object-contain border-4 border-orange-500"
-              src={product?.product_thumb}
-              alt={product?.product_name}
-            />
+            {!isLoading ? (
+              <img
+                className="h-[300px] w-[300px] object-contain rounded-lg bg-white border border-gray-300"
+                src={product?.product_thumb}
+                alt={product?.product_name}
+              />
+            ) : (
+              <Skeleton height={300} width={300} />
+            )}
           </div>
           <div className="px-8">
             <div className="uppercase tracking-wide text-gray-800 text-xl font-semibold">
-              {product?.product_name}
+              {product?.product_name || <Skeleton />}
             </div>
-            <Rate
-              disabled
-              defaultValue={product.product_ratingsAverage}
-              allowHalf
-              style={{ fontSize: 16 }}
-            />
+            {!isLoading ? (
+              <Rate
+                disabled
+                defaultValue={product?.product_ratingsAverage}
+                allowHalf
+                style={{ fontSize: 16 }}
+              />
+            ) : (
+              <Skeleton />
+            )}
             <p className="mt-2 text-orange-500 font-medium text-2xl">
-              {displayCurrencyVND(product?.product_price)}
+              {displayCurrencyVND(product?.product_price) || <Skeleton />}
             </p>
-            <div>
-              <span>Sản phẩm của</span>
-              <span className="ml-2 text-orange-500">Lân shopee</span>
-            </div>
+            {!isLoading ? (
+              <div>
+                <span>Sản phẩm của</span>
+                <span className="ml-2 text-orange-500">{shop?.name}</span>
+              </div>
+            ) : (
+              <Skeleton />
+            )}
 
             <hr className="my-4" />
             <div className="grid grid-cols-2">
-              {renderAttributesByType(product.product_type, product)}
+              {!isLoading ? (
+                renderAttributesByType(product?.product_type, product)
+              ) : (
+                <>
+                  <Skeleton count={3} />
+                  <Skeleton count={3} className="ml-1" />
+                </>
+              )}
             </div>
             <hr className="my-4" />
-            <QuantityInput
-              quantity={foundItem?.quantity}
-              hasLabel
-              cart={foundItem}
-            />
+            {!isLoading ? (
+              <QuantityInput
+                quantity={foundItem?.quantity}
+                hasLabel
+                cart={foundItem}
+              />
+            ) : (
+              <Skeleton />
+            )}
             <div className="flex justify-start gap-x-4 items-center my-4 outline-none">
               <button className="rounded-none px-4 py-2 bg-amber-400 text-white w-[20vw] box-border">
                 Mua ngay
@@ -120,7 +161,9 @@ const ProductDetail = () => {
         <div className="p-4 bg-white rounded-md my-4">
           <h1 className="text-gray-900 text-xl font-semibold">Mô tả</h1>
           <hr className="my-4" />
-          <p className="italic text-gray-500">{product.product_description}</p>
+          <p className="italic text-gray-500">
+            {product?.product_description || <Skeleton />}
+          </p>
         </div>
       </div>
     </HomeLayout>

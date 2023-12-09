@@ -4,6 +4,13 @@ export const ProductEndpoint = {
         url: "/product",
         method: "GET",
     },
+    findProductsByShopId: (shopId: string) => ({
+        url: `/product/product_shop`,
+        method: "GET",
+        params: {
+            product_shop: shopId
+        }
+    }),
     findById: (id: string) => ({
         url: `/product/${id}`,
         method: "GET",

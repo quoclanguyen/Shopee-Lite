@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import HomeLayout from "../layouts/HomeLayout";
 import Carousel from "../components/Carousel";
-import { categoryImages, heroImages } from "../constants";
-import useLoading from "../hooks/useLoading";
-import Loading from "../components/Loading";
 import CategoryItem from "../components/CategoryItem";
-import { CategoryProps } from "../interfaces";
-import ProductItem from "../components/ProductItem";
+import { categoryImages, heroImages } from "../constants";
+import HomeLayout from "../layouts/HomeLayout";
+
 import { useFindAllProduct } from "../api/services/productServices";
+import ProductItem from "../components/ProductItem";
+import { CategoryProps, Product } from "../interfaces";
+import Skeleton from "react-loading-skeleton";
 interface ProductProps {
   id: number;
   price: number;
@@ -22,7 +21,6 @@ interface ProductProps {
 function Home() {
   const { data: products, isLoading } = useFindAllProduct();
   console.log({ products });
-  if (isLoading) return <p>Loading...</p>;
   return (
     <HomeLayout>
       <Carousel images={heroImages} />
@@ -40,9 +38,19 @@ function Home() {
             Dành cho bạn
           </h1>
           <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4 gap-8 md:px-20">
-            {products?.map((product: any) => (
+            {products?.map((product: Product) => (
               <ProductItem product={product} />
             ))}
+            {isLoading &&
+              Array.from({ length: 4 }).map((index: number) => (
+                <div
+                  className="bg-white rounded-sm shadow-md overflow-hidden flex-grow relative cursor-pointer hover:scale-110 duration-100 p-2"
+                  key={index}
+                >
+                  <Skeleton height={200} width={"100%"} />
+                  <Skeleton count={3} />
+                </div>
+              ))}
           </div>
         </div>
       </div>

@@ -34,7 +34,7 @@ const CartItem: React.FC<CartItemProps> = ({ cart }) => {
     dispatch(selectOne(cart.product._id));
   };
   return (
-    <div className="flex items-center gap-x-4 p-2">
+    <div className="flex items-center gap-x-4 pl-2">
       <Checkbox checked={cart.selected} onChange={onChange} />
       <div
         className={clsx(
@@ -45,7 +45,7 @@ const CartItem: React.FC<CartItemProps> = ({ cart }) => {
         <div className="flex items-start">
           <img
             src={cart.product.product_thumb}
-            className="h-[100px] w-[100px] border-2 border-orange-500 object-contain"
+            className="h-[100px] w-[100px] border border-gray-300 object-contain"
           />
           <div className="ml-4 flex flex-col justify-between">
             <h1

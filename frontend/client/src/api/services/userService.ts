@@ -24,8 +24,21 @@ const findUserById = async (id: string) => {
         return [];
     }
 }
+const findShopById = async (id: string) => {
+    try {
+        const userResponse = await axiosClient.request(UserEndpoint.findShopById(id));
+        return userResponse.metadata;
+    } catch (err) {
+        console.log("Error fetching")
+        console.log(err)
+        return [];
+    }
+}
 export const usefindUserById = (id: string) => {
     return useQuery({ queryKey: ['findUserById', id], queryFn: () => findUserById(id) })
+}
+export const usefindShopById = (id: string) => {
+    return useQuery({ queryKey: ['findShopById', id], queryFn: () => findShopById(id) })
 }
 export const useFindAllProduct = () => {
     return useQuery({ queryKey: ['findAllUsers'], queryFn: findAllUsers, staleTime: 5000 })

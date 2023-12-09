@@ -35,8 +35,21 @@ const findProductBySlug = async (slug: string): Promise<Product | any[]> => {
         return [];
     }
 }
+const findProductsByShopId = async (shopId: string): Promise<Product[] | any[]> => {
+    try {
+        const productResponse = await axiosClient.request(ProductEndpoint.findProductsByShopId(shopId));
+        return productResponse.metadata;
+    } catch (err) {
+        console.log("Error fetching")
+        console.log(err)
+        return [];
+    }
+}
 export const useFindProductById = (id: string) => {
     return useQuery({ queryKey: ['findProductById', id], queryFn: () => findProductById(id) })
+}
+export const useFindProductsByShopId = (id: string) => {
+    return useQuery({ queryKey: ['findProductsByShopId', id], queryFn: () => findProductsByShopId(id) })
 }
 export const useFindProductBySlug = (slug: string) => {
     return useQuery({ queryKey: ['findProductBySlug', slug], queryFn: () => findProductBySlug(slug) })

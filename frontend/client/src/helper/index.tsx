@@ -6,11 +6,11 @@ export function renderAttributesByType(type: string, product: Product) {
       return (
         <>
           <label className="text-gray-500">Thương hiệu</label>
-          <p className="text-sky-500">{product.product_attributes.brand}</p>
+          <p className="text-sky-500">{product?.product_attributes.brand}</p>
           <label className="text-gray-500">Chất liệu</label>
-          <p className="text-sky-500">{product.product_attributes.material}</p>
+          <p className="text-sky-500">{product?.product_attributes.material}</p>
           <label className="text-gray-500">Kích thước</label>
-          <p className="text-sky-500">{product.product_attributes.size}</p>
+          <p className="text-sky-500">{product?.product_attributes.size}</p>
         </>
       );
     case "Electronics":
@@ -18,23 +18,23 @@ export function renderAttributesByType(type: string, product: Product) {
         <>
           <label className="text-gray-500">Hãng</label>
           <p className="text-sky-500">
-            {product.product_attributes.manufacturer}
+            {product?.product_attributes.manufacturer}
           </p>
           <label className="text-gray-500">Dòng</label>
-          <p className="text-sky-500">{product.product_attributes.model}</p>
+          <p className="text-sky-500">{product?.product_attributes.model}</p>
           <label className="text-gray-500">Màu sắc</label>
-          <p className="text-sky-500">{product.product_attributes.color}</p>
+          <p className="text-sky-500">{product?.product_attributes.color}</p>
         </>
       );
     default:
       return (
         <>
           <label className="text-gray-500">Thương hiệu</label>
-          <p className="text-sky-500">{product.product_attributes.brand}</p>
+          <p className="text-sky-500">{product?.product_attributes.brand}</p>
           <label className="text-gray-500">Chất liệu</label>
-          <p className="text-sky-500">{product.product_attributes.material}</p>
+          <p className="text-sky-500">{product?.product_attributes.material}</p>
           <label className="text-gray-500">Kích thước</label>
-          <p className="text-sky-500">{product.product_attributes.size}</p>
+          <p className="text-sky-500">{product?.product_attributes.size}</p>
         </>
       );
   }

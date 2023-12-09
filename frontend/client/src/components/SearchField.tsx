@@ -30,7 +30,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
   const handleSuggestionClick = (value: string) => {
     setSearchValue(value);
     const product = data.filter((item) => item.product_name === value);
-    navigate(`/product/${product[0]?._id}`);
+    navigate(`/product/${product[0]?.product_slug}`);
     setSuggestions([]); // Clear suggestions when a suggestion is clicked
   };
 

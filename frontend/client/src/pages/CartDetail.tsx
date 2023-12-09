@@ -37,13 +37,12 @@ function CartDetail() {
     setSelectedAll(!selectedAll);
     dispatch(!selectedAll ? selectAll() : deselectAll());
   };
-  const handleSelectCartItem = () => {};
   return (
     <HomeLayout>
       <App>
         <div className="px-16 py-8">
           <div className="flex justify-between items-start gap-x-4">
-            <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col w-full gap-2">
               {cart?.length > 1 && (
                 <div className="bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 p-2 flex-grow gap-x-4 flex">
                   <Checkbox

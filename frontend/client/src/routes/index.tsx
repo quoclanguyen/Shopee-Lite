@@ -10,7 +10,8 @@ import ProductDetail from "../pages/ProductDetail";
 import Register from "../pages/Register";
 import PrivateRoutes from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import "react-loading-skeleton/dist/skeleton.css";
 function AppRoutes() {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
@@ -18,6 +19,7 @@ function AppRoutes() {
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
         <Routes>
           <Route element={<PrivateRoutes isAuth={isAuthenticated} />}>

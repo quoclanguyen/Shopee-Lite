@@ -12,4 +12,8 @@ export const UserEndpoint = {
         url: `/users/${id}`,
         method: "GET",
     }),
+    findShopById: (id: string) => ({
+        url: `/shop/${id}`,
+        method: "GET",
+    }),
 };

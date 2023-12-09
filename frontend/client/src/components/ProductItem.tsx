@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Rate, Tag } from "antd";
 import React, { useState } from "react";
-import { FaShoppingCart } from "react-icons/fa";
+import { TbShoppingCartPlus, TbShoppingCartX } from "react-icons/tb";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Cart, Product } from "../interfaces";
@@ -14,7 +15,6 @@ interface ProductItemProps {
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
-  const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector(cartSelector);
@@ -36,12 +36,10 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   return (
     <div
       key={product._id}
-      className="bg-white rounded-sm shadow-md overflow-hidden flex-grow relative cursor-pointer hover:scale-110 duration-100"
-      onMouseEnter={() => setShowCart(true)}
-      onMouseLeave={() => setShowCart(false)}
+      className="bg-white rounded-sm shadow-md overflow-hidden flex-grow relative cursor-pointer duration-100"
       onClick={() => navigate(`/product/${product.product_slug}`)}
     >
-      {showCart && (
+      {/* {showCart && (
         <FaShoppingCart
           className={clsx(
             "absolute right-2 top-2 bg-transparent text-gray-400 cursor-pointer fade-in text-2xl",
@@ -59,11 +57,43 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
             dispatch(addItem(cart));
           }}
         />
-      )}
+      )} */}
+      <div className="add-to-cart">
+        <div className="bg-gray-900 opacity-30 w-full h-[200px] absolute"></div>
+        <button
+          className={clsx(
+            "bg-orange-500 text-white font-semibold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] focus:outline-none focus:border-none",
+            {
+              "bg-red-500": isProductInCart,
+            }
+          )}
+          onClick={(event) => {
+            const cart: Cart = {
+              product,
+              quantity: 1,
+              selected: false,
+            };
+            event.stopPropagation();
+            dispatch(addItem(cart));
+          }}
+        >
+          {!isProductInCart ? (
+            <div className="flex items-center min-w-max gap-x-2">
+              <TbShoppingCartPlus className="text-2xl" />{" "}
+              <span className="text-xs">Thêm vào Giỏ</span>
+            </div>
+          ) : (
+            <div className="flex items-center min-w-max gap-x-2">
+              <TbShoppingCartX className="text-2xl" />
+              <span className="text-xs">Xoá khỏi Giỏ</span>
+            </div>
+          )}
+        </button>
+      </div>
       <img
         src={product.product_thumb}
         alt={product.product_name}
-        className="h-[200px] w-[200px] object-scale-down pb-2"
+        className="h-[200px] w-[200px] object-scale-down pb-2 mx-auto"
       />
       <div className="p-2 border-t-gray-100 border-t-2 card">
         <h1 className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 ">
