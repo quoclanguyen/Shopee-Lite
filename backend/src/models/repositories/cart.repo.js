@@ -4,7 +4,10 @@ const cart = require("../cart.model");
 const { convertToObjectIdMongodb } = require("../../utils/index");
 
 const createUserCart = async ({ userId, product }) => {
-  const query = { cart_userId: convertToObjectIdMongodb(userId), cart_state: "active" },
+  const query = {
+      cart_userId: convertToObjectIdMongodb(userId),
+      cart_state: "active",
+    },
     updateOrInsert = {
       $addToSet: {
         cart_products: product,
@@ -37,7 +40,9 @@ const checkCartExists = async ({ model, filter }) => {
 };
 
 const findCartById = async (cartId) => {
-  return await cart.findOne({ _id: convertToObjectIdMongodb(cartId), cart_state: "active" }).lean();
+  return await cart
+    .findOne({ _id: convertToObjectIdMongodb(cartId), cart_state: "active" })
+    .lean();
 };
 
 module.exports = {

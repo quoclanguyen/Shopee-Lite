@@ -5,7 +5,7 @@ const token = localStorage.getItem('accessToken')
 const account = localStorage.getItem('account');
 const initialState = {
   isAuthenticated: !!token,
-  account
+  account: JSON.parse(account)
 }
 
 const authSlice = createSlice({

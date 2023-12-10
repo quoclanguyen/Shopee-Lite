@@ -2,14 +2,13 @@
 import { Tag } from "antd";
 import clsx from "clsx";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Cart } from "../interfaces";
-import { displayCurrencyVND } from "../utils";
-import QuantityInput from "./QuantityInput";
-import Checkbox from "./Checkbox";
-import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { useDispatch } from "react-redux";
 import { selectOne } from "../store/reducer/cart";
+import { displayCurrencyVND } from "../utils";
+import Checkbox from "./Checkbox";
+import QuantityInput from "./QuantityInput";
 
 interface CartItemProps {
   cart: Cart;
@@ -17,25 +16,13 @@ interface CartItemProps {
 const CartItem: React.FC<CartItemProps> = ({ cart }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const renderTag = (tag: string) => {
-    switch (tag) {
-      case "new":
-        return <Tag color="#40f23a">Mới</Tag>;
-      case "hot":
-        return <Tag color="#ff8d03">Nóng</Tag>;
-      case "sale":
-        return <Tag color="#f42020">Sale</Tag>;
-      default:
-        return <Tag color="#40f23a">Mới</Tag>;
-    }
-  };
   console.log({ cart });
   const onChange = () => {
     dispatch(selectOne(cart.product._id));
   };
   return (
     <div className="flex items-center gap-x-4 pl-2">
-      <Checkbox checked={cart.selected} onChange={onChange} />
+      <Checkbox checked={cart.select} onChange={onChange} />
       <div
         className={clsx(
           "bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 px-4 py-2 flex-grow",

@@ -8,19 +8,14 @@ import { useFindAllProduct } from "../api/services/productServices";
 import ProductItem from "../components/ProductItem";
 import { CategoryProps, Product } from "../interfaces";
 import Skeleton from "react-loading-skeleton";
-interface ProductProps {
-  id: number;
-  price: number;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  title: string;
-}
+import { useSelector } from "react-redux";
+import { accountSelector } from "../store/reducer/auth";
+import { useGetCartByUserId } from "../api/services/cartService";
 function Home() {
   const { data: products, isLoading } = useFindAllProduct();
   console.log({ products });
+  const account = useSelector(accountSelector);
+  const { data } = useGetCartByUserId(account?._id);
   return (
     <HomeLayout>
       <Carousel images={heroImages} />

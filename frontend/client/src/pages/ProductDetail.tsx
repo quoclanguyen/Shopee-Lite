@@ -2,21 +2,20 @@
 import { Breadcrumb, Rate } from "antd";
 import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import {
   useFindProductBySlug,
   useFindProductsByShopId,
 } from "../api/services/productServices";
-import QuantityInput from "../components/QuantityInput";
-import { Cart } from "../interfaces";
-import HomeLayout from "../layouts/HomeLayout";
-import { addItem, cartSelector } from "../store/reducer/cart";
-import { displayCurrencyVND } from "../utils";
-import { renderAttributesByType } from "../helper";
-import Skeleton from "react-loading-skeleton";
-import SkeletonNode from "antd/es/skeleton/Node";
 import { usefindShopById } from "../api/services/userService";
+import QuantityInput from "../components/QuantityInput";
+import { renderAttributesByType } from "../helper";
+import { AddToCartDto, Cart } from "../interfaces";
+import HomeLayout from "../layouts/HomeLayout";
+import { cartSelector, updateCartRedux } from "../store/reducer/cart";
+import { displayCurrencyVND } from "../utils";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -42,6 +41,14 @@ const ProductDetail = () => {
       }
     );
   }, [cartItems, slug, product]);
+
+  const handleAddToCart = () => {
+    const cart: AddToCartDto = {
+      productId: foundItem?._id,
+      quantity: 0,
+    };
+    dispatch(updateCartRedux(cart));
+  };
   console.log({ product });
   return (
     <HomeLayout>
@@ -145,13 +152,7 @@ const ProductDetail = () => {
               </button>
               <button
                 className="rounded-none px-4 py-2 bg-orange-500 text-white w-[20vw] box-border outline-none"
-                onClick={() => {
-                  const cart: Cart = {
-                    product,
-                    quantity: 1,
-                  };
-                  dispatch(addItem(cart));
-                }}
+                onClick={handleAddToCart}
               >
                 {isProductInCart ? "Xoá khỏi giỏ hàng" : "Thêm vào giỏ hàng"}
               </button>

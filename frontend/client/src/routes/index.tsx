@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CartDetail from "../pages/CartDetail";
@@ -10,8 +12,6 @@ import ProductDetail from "../pages/ProductDetail";
 import Register from "../pages/Register";
 import PrivateRoutes from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import "react-loading-skeleton/dist/skeleton.css";
 function AppRoutes() {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated

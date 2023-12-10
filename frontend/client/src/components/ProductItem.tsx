@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Rate, Tag } from "antd";
-import React, { useState } from "react";
-import { TbShoppingCartPlus, TbShoppingCartX } from "react-icons/tb";
+import React from "react";
 
+import clsx from "clsx";
+import { TbShoppingCartPlus, TbShoppingCartX } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Cart, Product } from "../interfaces";
-import { displayCurrencyVND } from "../utils";
-import { addItem, cartSelector } from "../store/reducer/cart";
-import clsx from "clsx";
-import { addProductToCart } from "../api/services/cartService";
+import { AddToCartDto, Cart, Product } from "../interfaces";
 import { accountSelector } from "../store/reducer/auth";
+import { displayCurrencyVND } from "../utils";
+import { cartSelector } from "../store/reducer/cart";
+import {
+  checkProductExists,
+  createOrAddItem,
+  removeItemFromCart,
+} from "../api/services/cartService";
 
 interface ProductItemProps {
   product: Product;
@@ -33,34 +37,33 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         return <Tag color="#40f23a">Mới</Tag>;
     }
   };
-  const isProductInCart = cartItems.find(
-    (item: Cart) => item.product._id === product._id
-  );
+  const isProductInCart =
+    cartItems.find((item: Cart) => item?.product?._id === product?._id) ??
+    false;
+  const handleAddToCart = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    if (account) {
+      const cart: AddToCartDto = {
+        productId: product._id,
+        userId: account._id,
+        quantity: 1,
+      };
+      const checkExistRes = await checkProductExists(account._id, product._id);
+      if (checkExistRes) {
+        await removeItemFromCart(account._id, product._id);
+      } else {
+        await createOrAddItem(cart);
+      }
+    }
+  };
   return (
     <div
       key={product._id}
       className="bg-white rounded-sm shadow-md overflow-hidden flex-grow relative cursor-pointer duration-100"
       onClick={() => navigate(`/product/${product.product_slug}`)}
     >
-      {/* {showCart && (
-        <FaShoppingCart
-          className={clsx(
-            "absolute right-2 top-2 bg-transparent text-gray-400 cursor-pointer fade-in text-2xl",
-            {
-              "text-orange-500": isProductInCart,
-            }
-          )}
-          onClick={(event) => {
-            const cart: Cart = {
-              product,
-              quantity: 1,
-              selected: false,
-            };
-            event.stopPropagation();
-            dispatch(addItem(cart));
-          }}
-        />
-      )} */}
       <div className="add-to-cart">
         <div className="bg-gray-900 opacity-30 w-full h-[200px] absolute"></div>
         <button
@@ -70,23 +73,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
               "bg-red-500": isProductInCart,
             }
           )}
-          onClick={async (event) => {
-            const cart: Cart = {
-              product,
-              quantity: 1,
-              selected: false,
-            };
-            const response = await addProductToCart({
-              userId: account?._id,
-              product: {
-                data: product,
-                quantity: 1,
-              },
-            });
-            console.log({ response });
-            event.stopPropagation();
-            dispatch(addItem(cart));
-          }}
+          onClick={handleAddToCart}
         >
           {!isProductInCart ? (
             <div className="flex items-center min-w-max gap-x-2">

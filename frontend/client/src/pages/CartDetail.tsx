@@ -2,32 +2,33 @@
 import { App, Empty } from "antd";
 import { countBy, sumBy } from "lodash";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import CartItem from "../components/CartItem";
 import CartSummary from "../components/CartSummary";
 import Checkbox from "../components/Checkbox";
+import { useUpdateCartStatus } from "../hooks/useUpdateCartStatus";
 import { Cart } from "../interfaces";
 import HomeLayout from "../layouts/HomeLayout";
-import { cartSelector, deselectAll, selectAll } from "../store/reducer/cart";
+import { deselectAll, selectAll } from "../store/reducer/cart";
 
 function CartDetail() {
-  const cart = useSelector(cartSelector);
   const [selectedAll, setSelectedAll] = useState(false);
+  const { cartData, cartInReduxStore, account } = useUpdateCartStatus();
+  console.log({ cartData });
   useEffect(() => {
-    const selectedCount = countBy(cart, "selected")["true"] || 0;
-    setSelectedAll(selectedCount === cart.length);
-  }, [cart]);
+    const selectedCount = countBy(cartInReduxStore, "select")["true"] || 0;
+    setSelectedAll(selectedCount === cartInReduxStore.length);
+  }, [cartInReduxStore]);
   const dispatch = useDispatch();
 
-  const extractedItems = cart
-    .filter((item: Cart) => item.selected)
+  const extractedItems = cartInReduxStore
+    .filter((item: Cart) => item.select)
     .map((item: Cart) => ({
       product_price: item?.product.product_price,
       quantity: item?.quantity,
     }));
-  console.log("Detail:", cart);
-  const selectedCount = sumBy(cart, (item: Cart) =>
-    item.selected ? item.quantity : 0
+  const selectedCount = sumBy(cartInReduxStore, (item: Cart) =>
+    item.select ? item.quantity : 0
   );
   const totalPrice = sumBy(
     extractedItems,
@@ -37,13 +38,14 @@ function CartDetail() {
     setSelectedAll(!selectedAll);
     dispatch(!selectedAll ? selectAll() : deselectAll());
   };
+
   return (
     <HomeLayout>
       <App>
         <div className="px-16 py-8">
           <div className="flex justify-between items-start gap-x-4">
             <div className="flex flex-col w-full gap-2">
-              {cart?.length > 1 && (
+              {cartInReduxStore?.length > 1 && (
                 <div className="bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 p-2 flex-grow gap-x-4 flex">
                   <Checkbox
                     checked={selectedAll}
@@ -52,7 +54,7 @@ function CartDetail() {
                   <span>{!selectedAll ? "Chọn tất cả" : "Bỏ chọn tất cả"}</span>
                 </div>
               )}
-              {cart?.length === 0 && (
+              {cartInReduxStore?.length === 0 && (
                 <Empty
                   image="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-7359557-6024626.png"
                   imageStyle={{
@@ -64,7 +66,7 @@ function CartDetail() {
                 />
               )}
 
-              {cart.map((item: Cart) => (
+              {cartInReduxStore.map((item: Cart) => (
                 <CartItem cart={item} />
               ))}
             </div>

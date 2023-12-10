@@ -55,5 +55,5 @@ export const useFindProductBySlug = (slug: string) => {
     return useQuery({ queryKey: ['findProductBySlug', slug], queryFn: () => findProductBySlug(slug) })
 }
 export const useFindAllProduct = () => {
-    return useQuery({ queryKey: ['findAllProducts'], queryFn: findAllProducts, staleTime: 5000 })
+    return useQuery({ queryKey: ['findAllProducts'], queryFn: findAllProducts, staleTime: 5000, refetchIntervalInBackground: true })
 }

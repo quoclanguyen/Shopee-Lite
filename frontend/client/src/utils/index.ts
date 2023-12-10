@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "../interfaces";
 export function getCurrentDateAsString() {
@@ -76,3 +77,18 @@ export function generateRandomColor() {
 
     return colorHex;
 }
+export const debounce = <T extends (...args: any[]) => void>(
+    func: T,
+    delay: number
+): ((...args: Parameters<T>) => void) => {
+    let timeoutId: NodeJS.Timeout;
+
+    return function (this: any, ...args: Parameters<T>) {
+        const context = this;
+
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(context, args);
+        }, delay);
+    };
+};

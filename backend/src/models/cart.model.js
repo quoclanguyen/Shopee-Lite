@@ -1,29 +1,29 @@
-"use strict";
+// "use strict";
 
-const { Schema, model } = require("mongoose"); // Erase if already required
+// const { Schema, model } = require("mongoose"); // Erase if already required
 
-const DOCUMENT_NAME = "Cart";
-const COLLECTION_NAME = "Carts";
+// const DOCUMENT_NAME = "Cart";
+// const COLLECTION_NAME = "Carts";
 
-// Declare the Schema of the Mongo model
-const cartSchema = new Schema(
-  {
-    cart_state: {
-      type: String,
-      enum: ["active", "completed", "failed", "pending"],
-    },
-    cart_products: { type: Array, require: true, default: [] },
-    cart_count_product: { type: Number, default: 0 },
-    cart_userId: { type: Schema.Types.ObjectId, ref: "User" },
-  },
-  {
-    collection: COLLECTION_NAME,
-    timestamps: {
-      createdAt: "createdOn",
-      updatedAt: "modifiedOn",
-    },
-  }
-);
+// // Declare the Schema of the Mongo model
+// const cartSchema = new Schema(
+//   {
+//     cart_state: {
+//       type: String,
+//       enum: ["active", "completed", "failed", "pending"],
+//     },
+//     cart_products: { type: Array, require: true, default: [] },
+//     cart_count_product: { type: Number, default: 0 },
+//     cart_userId: { type: Schema.Types.ObjectId, ref: "User" },
+//   },
+//   {
+//     collection: COLLECTION_NAME,
+//     timestamps: {
+//       createdAt: "createdOn",
+//       updatedAt: "modifiedOn",
+//     },
+//   }
+// );
 
-//Export the model
-module.exports = model(DOCUMENT_NAME, cartSchema);
+// //Export the model
+// module.exports = model(DOCUMENT_NAME, cartSchema);

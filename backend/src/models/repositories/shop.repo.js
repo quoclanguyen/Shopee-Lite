@@ -1,7 +1,7 @@
 "use strict";
 
 const { convertToObjectIdMongodb } = require("../../utils");
-const shop = require("../shop.model");
+const user = require("../user.model");
 
 const findShopById = async ({
   shop_id,
@@ -13,7 +13,7 @@ const findShopById = async ({
     roles: 1,
   },
 }) => {
-  return await shop
+  return await user
     .findOne({ _id: convertToObjectIdMongodb(shop_id) })
     .select(select);
 };

@@ -10,7 +10,16 @@ export interface RouteProps {
 }
 export interface AddToCartDto {
   userId: string;
-  product: any;
+  productId: string;
+  quantity: number;
+}
+export interface CartItem {
+  product: string;
+  quantity: number;
+}
+export interface UpdateCart {
+  userId?: string;
+  items?: CartItem[];
 }
 export interface Product {
   _id: string;
@@ -31,7 +40,7 @@ export interface Product {
 export interface Cart {
   product: Product;
   quantity: number;
-  selected: boolean;
+  select: boolean;
 }
 export interface Category {
   icon: IconType;
