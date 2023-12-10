@@ -12,16 +12,17 @@ class OrderController {
 
     try {
       // Gọi service để thực hiện checkout
-      const createdOrder = await this.orderService.checkout(
-        userId,
-        orderItems,
-        overallTotalPrice
-      );
+      const orderData = { user: userId, orderItems: orderItems };
 
-      // Trả về thông tin đơn hàng đã tạo
+      const createdOrders = await this.orderService.checkout(orderData);
+
+      if (createdOrders.length === 0) {
+        return res.status(404).json({ message: "No orders created" });
+      }
+
       res
         .status(201)
-        .json({ message: "Order created successfully", data: createdOrder });
+        .json({ message: "Orders created successfully", data: createdOrders });
     } catch (error) {
       // Xử lý lỗi nếu có
       res

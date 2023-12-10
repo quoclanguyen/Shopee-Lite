@@ -5,16 +5,26 @@ class OrderService {
     this.orderRepository = new OrderRepository();
   }
 
-  async checkout(userId, orderItems, overallTotalPrice) {
+  async checkout(orderData) {
     try {
-      const orderData = {
-        user: userId,
-        orderItems: orderItems,
-        overallTotalPrice: overallTotalPrice,
-        status: "pending",
-      };
-      const createdOrder = await this.orderRepository.createOrder(orderData);
-      return createdOrder;
+      const orders = [];
+      for (const item of orderData.orderItems) {
+        const shopId = item.shop;
+
+        // Tạo dữ liệu đơn hàng dựa trên từng shop
+        const order = {
+          user: orderData.user,
+          orderItems: [item],
+          overallTotalPrice: item.totalPrice,
+          status: item.status,
+        };
+        ``;
+
+        const createdOrder = await this.orderRepository.createOrder(order);
+        orders.push(createdOrder);
+      }
+
+      return orders;
     } catch (error) {
       throw new Error("Could not create order");
     }

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const DOCUMENT_NAME = "Order";
+const COLLECTION_NAME = "Orders";
 const orderItemSchema = new mongoose.Schema({
   shop: {
     type: mongoose.Schema.Types.ObjectId,
@@ -29,28 +31,34 @@ const orderItemSchema = new mongoose.Schema({
   },
 });
 
-const orderSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const orderSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    orderItems: [orderItemSchema],
+    overallTotalPrice: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "shipped", "delivered"],
+      default: "pending",
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  orderItems: [orderItemSchema],
-  overallTotalPrice: {
-    type: Number,
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ["pending", "processing", "shipped", "delivered"],
-    default: "pending",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const Order = mongoose.model("Order", orderSchema);
-
-module.exports = Order;
+  {
+    collection: COLLECTION_NAME,
+    timestamps: {
+      createdAt: "createdOn",
+      updatedAt: "modifiedOn",
+    },
+  }
+);
+module.exports = mongoose.model(DOCUMENT_NAME, orderSchema);
