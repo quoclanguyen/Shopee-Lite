@@ -6,9 +6,9 @@ class OrderRepository {
   }
   async findOrdersByShopId(shopId) {
     try {
-      const orders = await Order.find({ "orderItems.shop": shopId }).populate(
-        "user"
-      );
+      const orders = await Order.find({ "orderItems.shop": shopId })
+        .populate("user")
+        .populate("orderItems.items.product");
       return orders;
     } catch (error) {
       throw new Error("Could not find orders by shopId");
