@@ -8,5 +8,6 @@ const orderController = new OrderController();
 // router.use(authentication);
 // Route for creating or adding an item to a cart
 router.post("/checkout", orderController.checkout);
+router.get("/get-by-shop-id/:shopId", orderController.getOrdersByShopId);
 
 module.exports = router;

@@ -19,6 +19,14 @@ class OrderService {
       throw new Error("Could not create order");
     }
   }
+  async findOrdersByShopId(shopId) {
+    try {
+      const orders = await this.orderRepository.findOrdersByShopId(shopId);
+      return orders;
+    } catch (error) {
+      throw new Error("Could not find orders by shopId");
+    }
+  }
 }
 
 module.exports = OrderService;
