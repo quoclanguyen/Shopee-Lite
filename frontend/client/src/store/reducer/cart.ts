@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { sumBy } from 'lodash';
 import { CartEndpoint } from '../../api/endpoints/cart';
 import axiosClient from '../../config/axiosClient';
@@ -82,9 +82,9 @@ const cartSlice = createSlice({
             if (state.items[existingItemIndex].quantity > 0) {
                 state.items[existingItemIndex].quantity -= 1;
             }
-            if (state.items[existingItemIndex].quantity == 0) {
-                state.items.splice(existingItemIndex, 1);
-            }
+            // if (state.items[existingItemIndex].quantity == 0) {
+            //     state.items.splice(existingItemIndex, 1);
+            // }
             state.totalQuantity = sumBy(state.items, 'quantity');
 
         },

@@ -14,7 +14,6 @@ import { deselectAll, selectAll } from "../store/reducer/cart";
 function CartDetail() {
   const [selectedAll, setSelectedAll] = useState(false);
   const { cartData, cartInReduxStore, account } = useUpdateCartStatus();
-  console.log({ cartData });
   useEffect(() => {
     const selectedCount = countBy(cartInReduxStore, "select")["true"] || 0;
     setSelectedAll(selectedCount === cartInReduxStore.length);
@@ -66,7 +65,7 @@ function CartDetail() {
                 />
               )}
 
-              {cartInReduxStore.map((item: Cart) => (
+              {cartInReduxStore.map((item: any) => (
                 <CartItem cart={item} />
               ))}
             </div>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery } from "@tanstack/react-query";
 import axiosClient from "../../config/axiosClient";
-import { AddToCartDto, UpdateCart } from "../../interfaces";
+import { AddToCartDto, UpdateCart, UpdateCartItem } from "../../interfaces";
 import { CartEndpoint } from "../endpoints/cart";
 import store from "../../store";
 import { updateCartRedux } from "../../store/reducer/cart";
@@ -24,9 +24,9 @@ export const createOrAddItem = async (data: AddToCartDto) => {
 //         return null;
 //     }
 // }
-export const updateCartItem = async (userId: string, productId: string, quantity: number) => {
+export const updateCartItem = async (data: UpdateCartItem) => {
     try {
-        const response = await axiosClient.request(CartEndpoint.updateCartItem(userId, productId, quantity));
+        const response = await axiosClient.request(CartEndpoint.updateCartItem(data));
         return response;
     } catch (error) {
         console.log(error);
@@ -79,6 +79,6 @@ export const useCheckProductExists = (userId: string, productId: string) => {
 export const useGetCartByUserId = (userId: string) => {
     return useQuery({
         queryKey: ['getCartByUserId', userId], queryFn: () => getCartByUserId(userId),
-        refetchIntervalInBackground: true, refetchInterval: 10000
+        refetchIntervalInBackground: true, staleTime: 10000
     })
 }

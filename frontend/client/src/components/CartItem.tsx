@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tag } from "antd";
 import clsx from "clsx";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { updateCartItem } from "../api/services/cartService";
 import { Cart } from "../interfaces";
+import { accountSelector } from "../store/reducer/auth";
 import { selectOne } from "../store/reducer/cart";
 import { displayCurrencyVND } from "../utils";
 import Checkbox from "./Checkbox";
@@ -16,13 +17,26 @@ interface CartItemProps {
 const CartItem: React.FC<CartItemProps> = ({ cart }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log({ cart });
+  const account = useSelector(accountSelector);
+  console.log("Cart item: ", cart);
   const onChange = () => {
     dispatch(selectOne(cart.product._id));
   };
+  useEffect(() => {
+    async function requestApi() {
+      await updateCartItem({
+        userId: account._id,
+        productId: cart.product._id,
+        select: cart.select,
+      });
+    }
+    requestApi();
+  }, [account._id, cart.product._id, cart.select]);
   return (
     <div className="flex items-center gap-x-4 pl-2">
-      <Checkbox checked={cart.select} onChange={onChange} />
+      {cart.quantity > 0 && (
+        <Checkbox checked={cart.select} onChange={onChange} />
+      )}
       <div
         className={clsx(
           "bg-white rounded-md shadow-md overflow-hidden relative cursor-pointer duration-100 px-4 py-2 flex-grow",

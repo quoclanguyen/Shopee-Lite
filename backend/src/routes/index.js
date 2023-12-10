@@ -16,6 +16,7 @@ router.use("/v1/api/product", require("./product"));
 // router.use("/v1/api/cart", require("./cart"));
 router.use("/v1/api/cart", require("./cart/index.v2"));
 router.use("/v1/api/shop", require("./shop"));
+router.use("/v1/api/order", require("./order"));
 router.use("/v1/api", require("./access"));
 
 module.exports = router;

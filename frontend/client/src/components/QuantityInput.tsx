@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Cart } from "../interfaces";
 import { decreaseItem, increaseItem } from "../store/reducer/cart";
 import { useEffect } from "react";
-import { updateCartItem } from "../api/services/cartService";
+import {
+  checkProductExists,
+  createOrAddItem,
+  removeItemFromCart,
+  updateCartItem,
+} from "../api/services/cartService";
 import { accountSelector } from "../store/reducer/auth";
 
 interface QuantityInputProps {
@@ -23,8 +28,15 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
   });
   const dispatch = useDispatch();
   const account = useSelector(accountSelector);
-  console.log({ cart });
-  const increaseQuantity = () => {
+  const increaseQuantity = async () => {
+    const checkExistRes = await checkProductExists(
+      account._id,
+      cart.product._id
+    );
+
+    if (!checkExistRes) {
+      await createOrAddItem(cart);
+    }
     dispatch(increaseItem(cart));
   };
 
@@ -35,10 +47,14 @@ const QuantityInput: React.FC<QuantityInputProps> = ({
   };
   useEffect(() => {
     async function requestApi() {
-      await updateCartItem(account._id, cart.product._id, quantity);
+      await updateCartItem({
+        userId: account._id,
+        productId: cart.product._id,
+        quantity,
+      });
     }
     requestApi();
-  }, [quantity]);
+  }, [account._id, cart.product._id, quantity]);
 
   return (
     <div className="flex items-center">

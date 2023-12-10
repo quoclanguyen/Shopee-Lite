@@ -1,4 +1,5 @@
 import { AddToCartDto, UpdateCart } from "../../interfaces";
+import { UpdateCartItem } from '../../interfaces/index';
 
 export const CartEndpoint = {
     createOrAddItem: (data: AddToCartDto) => ({
@@ -11,14 +12,10 @@ export const CartEndpoint = {
         method: "PUT",
         data
     }),
-    updateCartItem: (userId: string, productId: string, quantity: number) => ({
+    updateCartItem: (data: UpdateCartItem) => ({
         url: "/cart/update-each-product",
         method: "PUT",
-        data: {
-            userId,
-            productId,
-            quantity
-        }
+        data
     }),
     checkProductExists: (userId: string, productId: string) => ({
         url: "/cart/check-exists",

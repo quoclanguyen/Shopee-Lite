@@ -22,7 +22,6 @@ const Login = () => {
       password: data.password,
       role: "USER",
     });
-    console.log({ response });
     if (response.message === "OK") {
       toast.success("Đăng nhập thành công!");
       const token = response.metadata.tokens.accessToken;

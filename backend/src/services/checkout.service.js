@@ -1,15 +1,21 @@
 "use strict";
 
 const { findCartById } = require("../models/repositories/cart.repo");
-const { BadRequestError, AuthFailureError, ForbiddenError } = require("../core/error.response");
+const {
+  BadRequestError,
+  AuthFailureError,
+  ForbiddenError,
+} = require("../core/error.response");
 const { checkProductByServer } = require("../models/repositories/product.repo");
 const { getDiscountAmount } = require("./discount.service");
 const { acquireLock, releaseLock } = require("./redis.service");
 const order = require("../models/order.model");
+const CartRepository = require("../models/repositories/cart.v2.repo");
 
 class CheckoutService {
   static async checkoutReview({ cartId, userId, shop_order_ids }) {
-    const foundCart = await findCartById(cartId);
+    const cartRepository = new CartRepository();
+    const foundCart = await cartRepository.getById(cartId);
     if (!foundCart) throw new BadRequestError("Cart do not exists");
 
     const checkout_order = {
@@ -21,7 +27,11 @@ class CheckoutService {
       shop_order_ids_new = [];
 
     for (let i = 0; i < shop_order_ids.length; i++) {
-      const { shopId, shop_discounts = [], item_products = [] } = shop_order_ids[i];
+      const {
+        shopId,
+        shop_discounts = [],
+        item_products = [],
+      } = shop_order_ids[i];
       // check product available
       const checkProduct = await checkProductByServer(item_products);
       if (!checkProduct[0]) throw new BadRequestError("Order wrong");
@@ -66,12 +76,19 @@ class CheckoutService {
     };
   }
 
-  static async orderByUser({ shop_order_ids, cartId, userId, user_address = {}, user_payment = {} }) {
-    const { shop_order_ids_new, checkout_order } = await CheckoutService.checkoutReview({
-      cartId,
-      userId,
-      shop_order_ids,
-    });
+  static async orderByUser({
+    shop_order_ids,
+    cartId,
+    userId,
+    user_address = {},
+    user_payment = {},
+  }) {
+    const { shop_order_ids_new, checkout_order } =
+      await CheckoutService.checkoutReview({
+        cartId,
+        userId,
+        shop_order_ids,
+      });
 
     const products = shop_order_ids_new.flatMap((order) => order.item_products);
 
@@ -90,7 +107,9 @@ class CheckoutService {
 
     // check if
     if (acquireProduct.includes(false)) {
-      throw new BadRequestError("Mot so san pham da duoc cap nhat, vui long quay lai gio hang");
+      throw new BadRequestError(
+        "Mot so san pham da duoc cap nhat, vui long quay lai gio hang"
+      );
     }
 
     const newOrder = await order.create({

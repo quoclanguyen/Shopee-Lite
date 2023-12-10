@@ -6,15 +6,15 @@ import clsx from "clsx";
 import { TbShoppingCartPlus, TbShoppingCartX } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AddToCartDto, Cart, Product } from "../interfaces";
-import { accountSelector } from "../store/reducer/auth";
-import { displayCurrencyVND } from "../utils";
-import { cartSelector } from "../store/reducer/cart";
 import {
   checkProductExists,
   createOrAddItem,
   removeItemFromCart,
 } from "../api/services/cartService";
+import { AddToCartDto, Cart, Product } from "../interfaces";
+import { accountSelector } from "../store/reducer/auth";
+import { cartSelector } from "../store/reducer/cart";
+import { displayCurrencyVND } from "../utils";
 
 interface ProductItemProps {
   product: Product;
@@ -51,6 +51,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         quantity: 1,
       };
       const checkExistRes = await checkProductExists(account._id, product._id);
+
       if (checkExistRes) {
         await removeItemFromCart(account._id, product._id);
       } else {

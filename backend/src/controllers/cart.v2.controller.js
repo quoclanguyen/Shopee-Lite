@@ -113,6 +113,9 @@ class CartController {
         quantity,
         select
       );
+      if (quantity === 0) {
+        await this.cartService.removeItemFromCart(userId, productId);
+      }
       if (!updatedCart) {
         return res.status(404).json({ message: "Cart not found" });
       }

@@ -13,7 +13,6 @@ import { accountSelector } from "../store/reducer/auth";
 import { useGetCartByUserId } from "../api/services/cartService";
 function Home() {
   const { data: products, isLoading } = useFindAllProduct();
-  console.log({ products });
   const account = useSelector(accountSelector);
   const { data } = useGetCartByUserId(account?._id);
   return (

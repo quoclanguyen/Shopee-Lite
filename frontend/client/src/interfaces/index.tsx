@@ -21,6 +21,12 @@ export interface UpdateCart {
   userId?: string;
   items?: CartItem[];
 }
+export interface UpdateCartItem {
+  userId: string;
+  productId: string;
+  quantity?: number;
+  select?: boolean;
+}
 export interface Product {
   _id: string;
   product_name: string;
@@ -82,4 +88,20 @@ export interface CategoryProps {
   imageOnHover: string;
   label: string;
   color: string;
+}
+// Order
+
+export interface OrderObject {
+  userId: string;
+  orderItems: OrderItem[];
+  overallTotalPrice: number;
+}
+export interface OrderItem {
+  shop: string;
+  items: CartItem[];
+  totalPrice: number;
+}
+export interface CartItem {
+  product: string;
+  quantity: number;
 }
