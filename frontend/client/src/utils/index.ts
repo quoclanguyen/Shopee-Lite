@@ -111,7 +111,8 @@ export const convertToOrderItem = (array: any[]) => {
         } else {
             acc.push({
                 shop: item.product.product_shop,
-                items: [{ product: item.product._id, quantity: item.quantity }]
+                items: [{ product: item.product._id, quantity: item.quantity }],
+                totalPrice: item.product.product_price * item.quantity
             });
         }
 

@@ -5,6 +5,7 @@ class OrderController {
     this.orderService = new OrderService();
     this.checkout = this.checkout.bind(this);
     this.getOrdersByShopId = this.getOrdersByShopId.bind(this);
+    this.updateOrderStatus = this.updateOrderStatus.bind(this);
   }
 
   async checkout(req, res, next) {
@@ -48,6 +49,30 @@ class OrderController {
       res
         .status(500)
         .json({ message: "Failed to retrieve orders", error: error.message });
+    }
+  }
+  async updateOrderStatus(req, res, next) {
+    const { orderId } = req.params;
+    const { newStatus } = req.body;
+
+    try {
+      const updatedOrder = await this.orderService.updateOrderStatus(
+        orderId,
+        newStatus
+      );
+
+      if (!updatedOrder) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "Order status updated", data: updatedOrder });
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to update order status",
+        error: error.message,
+      });
     }
   }
 }
