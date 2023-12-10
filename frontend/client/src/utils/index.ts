@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jwtDecode } from "jwt-decode";
-import { JwtPayload } from "../interfaces";
+import { JwtPayload, OrderItem, OrderObject } from "../interfaces";
+import { sumBy } from "lodash";
 export function getCurrentDateAsString() {
     const currentDate = new Date();
 
@@ -92,3 +94,28 @@ export const debounce = <T extends (...args: any[]) => void>(
         }, delay);
     };
 };
+export const createOrderObject = (userId: string, orderItems: OrderItem[]) => {
+    const order: OrderObject = {
+        userId,
+        orderItems,
+        overallTotalPrice: sumBy(orderItems, 'totalPrice')
+    }
+    return order
+}
+export const convertToOrderItem = (array: any[]) => {
+    const arr2 = array.reduce((acc, item) => {
+        const existingShop = acc.find(shop => shop.shop === item.product.product_shop);
+
+        if (existingShop) {
+            existingShop.items.push({ product: item.product._id, quantity: item.quantity });
+        } else {
+            acc.push({
+                shop: item.product.product_shop,
+                items: [{ product: item.product._id, quantity: item.quantity }]
+            });
+        }
+
+        return acc;
+    }, []);
+    return arr2;
+}

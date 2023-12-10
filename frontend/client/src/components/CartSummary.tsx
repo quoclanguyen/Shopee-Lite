@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { displayCurrencyVND } from "../utils";
-import { App } from "antd";
+import { convertToOrderItem, displayCurrencyVND } from "../utils";
+import { Modal as AntdModal } from "antd";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { cartSelector } from "../store/reducer/cart";
+
+const Modal = styled(AntdModal)`
+  & .ant-btn-primary {
+    background: #f97316;
+  }
+`;
 interface CartSummaryProps {
   total: number;
   cartQuantity: number;
@@ -14,6 +23,8 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const [coupon, setCoupon] = useState("");
   const [showCoupon, setShowCoupon] = useState(false);
   const [isValidCoupon, setIsValidCoupon] = useState(false);
+  const cart = useSelector(cartSelector);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const priceAfterDiscount = (
@@ -55,6 +66,19 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       : 0;
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const newArray = convertToOrderItem(cart);
+  console.log({ newArray });
   return (
     <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
@@ -114,10 +138,18 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       </div>
       <button
         className="rounded-none bg-orange-500 text-white font-semibold w-full"
-        onClick={() => navigate("/shipping")}
+        onClick={showModal}
       >
         Xác nhận giỏ hàng ({cartQuantity})
       </button>
+      <Modal
+        title="Thanh toán đơn hàng"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Chắc chưa?</p>
+      </Modal>
     </div>
   );
 }
