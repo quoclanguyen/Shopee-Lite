@@ -27,6 +27,7 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const shippingFee = 0;
   const [isValidCoupon, setIsValidCoupon] = useState(false);
   const cart = useSelector(cartSelector);
+  const account = useSelector(accountSelector);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const navigate = useNavigate();
