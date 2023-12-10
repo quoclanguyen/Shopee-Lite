@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { convertToOrderItem, displayCurrencyVND } from "../utils";
+import { convertToOrderItem, createOrderObject, displayCurrencyVND } from "../utils";
 import { Modal as AntdModal } from "antd";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { cartSelector } from "../store/reducer/cart";
+import { OrderObject } from "../interfaces";
+import { accountSelector } from "../store/reducer/auth";
 
 const Modal = styled(AntdModal)`
   & .ant-btn-primary {
@@ -24,6 +26,7 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const [showCoupon, setShowCoupon] = useState(false);
   const [isValidCoupon, setIsValidCoupon] = useState(false);
   const cart = useSelector(cartSelector);
+  const account = useSelector(accountSelector);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -78,7 +81,8 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
     setIsModalOpen(false);
   };
   const newArray = convertToOrderItem(cart);
-  console.log({ newArray });
+  const obj = createOrderObject(account._id, newArray);
+  console.log({ obj });
   return (
     <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
