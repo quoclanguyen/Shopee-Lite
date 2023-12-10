@@ -37,6 +37,17 @@ class OrderService {
       throw new Error("Could not find orders by shopId");
     }
   }
+  async updateOrderStatus(orderId, newStatus) {
+    try {
+      const updatedOrder = await this.orderRepository.updateOrderStatus(
+        orderId,
+        newStatus
+      );
+      return updatedOrder;
+    } catch (error) {
+      throw new Error("Could not update order status");
+    }
+  }
 }
 
 module.exports = OrderService;

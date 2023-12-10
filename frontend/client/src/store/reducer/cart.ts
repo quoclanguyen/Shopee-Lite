@@ -74,7 +74,6 @@ const cartSlice = createSlice({
             state.totalQuantity = sumBy(state.items, 'quantity');
 
 
-
         },
         decreaseItem: (state, action: PayloadAction<any>) => {
             const productId = action.payload.product._id;
