@@ -111,7 +111,7 @@ const Header: React.FC<HeaderProps> = () => {
                 </ul>
               }
             >
-              {user && (
+             
                 <Tooltip title={user?.name} placement="left">
                   <Avatar
                     style={{
@@ -120,10 +120,10 @@ const Header: React.FC<HeaderProps> = () => {
                     }}
                     size="large"
                   >
-                    {getTheFirstLetter(user?.name)}
+                    {getTheFirstLetter(user?.name || "John Doe")}
                   </Avatar>
                 </Tooltip>
-              )}
+              
             </Popover>
           ) : (
             <p

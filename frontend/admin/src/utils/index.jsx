@@ -1,3 +1,4 @@
+import { Tag } from "antd";
 import { jwtDecode } from "jwt-decode";
 export function getCurrentDateAsString() {
     const currentDate = new Date();
@@ -52,5 +53,21 @@ export function getDayPeriod() {
     return 'buổi chiều';
   } else {
     return 'buổi tối';
+  }
+}
+export function renderStatusTags(status) {
+  switch (status.toLowerCase()) {
+      case 'pending':
+         return <Tag color="#f59842">Đang chờ duyệt</Tag>
+      case 'confirmed':
+        return <Tag color="#ffea00">Đã xác nhận</Tag>
+      case 'shipped':
+        return <Tag color="#007bff">Đang giao hàng</Tag>
+      case 'cancelled':
+        return <Tag color="#ff000d">Đã hủy</Tag>
+      case 'delivered':
+        return <Tag color="#6aff00">Đã giao hàng thành công</Tag>
+      default:
+        return <Tag color="#f59842">Đang chờ duyệt</Tag>
   }
 }
