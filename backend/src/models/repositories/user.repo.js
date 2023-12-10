@@ -41,9 +41,16 @@ const createNewRole = async ({ foundUser, role }) => {
 
   return await user.findOneAndUpdate(query, updateOrInsert, options);
 };
-
+async function updateUserById(userId, updates) {
+  return user.findOneAndUpdate(
+    { _id: convertToObjectIdMongodb(userId) },
+    { $set: updates },
+    { new: true }
+  );
+}
 module.exports = {
   findByEmail,
   createNewRole,
   findById,
+  updateUserById,
 };
