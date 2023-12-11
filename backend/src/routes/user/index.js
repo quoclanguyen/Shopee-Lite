@@ -6,5 +6,7 @@ const router = express.Router();
 
 const userController = new UserController();
 router.put("/:userId", userController.updateUser);
+router.get("/:userId", userController.findUserById);
+router.get("", userController.findAllUsers);
 
 module.exports = router;

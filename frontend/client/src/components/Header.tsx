@@ -99,7 +99,18 @@ const Header: React.FC<HeaderProps> = () => {
               placement="bottomLeft"
               content={
                 <ul className="min-w-max">
-                  <li className="menu-item">Profile</li>
+                  <li
+                    className="menu-item cursor-pointer"
+                    onClick={() => navigate("/my-profile")}
+                  >
+                    Thông tin tài khoản
+                  </li>
+                  <li
+                    className="menu-item cursor-pointer"
+                    onClick={() => navigate("/my-profile")}
+                  >
+                    Đơn hàng
+                  </li>
                   <li
                     className="menu-item"
                     onClick={() => {
@@ -111,19 +122,15 @@ const Header: React.FC<HeaderProps> = () => {
                 </ul>
               }
             >
-             
-                <Tooltip title={user?.name} placement="left">
-                  <Avatar
-                    style={{
-                      backgroundColor: "#f97316",
-                      verticalAlign: "middle",
-                    }}
-                    size="large"
-                  >
-                    {getTheFirstLetter(user?.name || "John Doe")}
-                  </Avatar>
-                </Tooltip>
-              
+              <Avatar
+                style={{
+                  backgroundColor: "#f97316",
+                  verticalAlign: "middle",
+                }}
+                size="large"
+              >
+                {getTheFirstLetter(user?.name || "John Doe")}
+              </Avatar>
             </Popover>
           ) : (
             <p

@@ -22,7 +22,7 @@ interface CartSummaryProps {
   cartQuantity: number;
 }
 function CartSummary({ cartQuantity, total }: CartSummaryProps) {
-  const [checkoutMessage, setCheckoutMessage] = useState("");
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const [showCoupon, setShowCoupon] = useState(false);
   const shippingFee = 0;
   const dispatch = useDispatch();
@@ -32,18 +32,24 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const navigate = useNavigate();
 
   const handleOk = async () => {
+    const selectedItems = cart.filter((item) => item.select);
     dispatch(
       setOrder(
-        createOrderObject(
-          account._id,
-          convertToOrderItem(cart.filter((item) => item.select))
-        )
+        createOrderObject(account._id, convertToOrderItem(selectedItems))
       )
     );
-    navigate("/confirm-order");
-    setIsModalOpen(false);
+    // kiểm tra xem đã thêm sản phẩm vào order chưa
+    console.log({ selectedItems });
+    if (selectedItems.length !== 0) {
+      navigate("/confirm-order");
+    } else {
+      setShowWarningModal(true);
+    }
   };
 
+  const handleCancel = () => {
+    setShowWarningModal(false);
+  };
   return (
     <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
@@ -84,6 +90,31 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       >
         Xác nhận giỏ hàng ({cartQuantity})
       </button>
+      <Modal
+        open={showWarningModal}
+        title={
+          <>
+            <h1 className="text-xl">Oops!!!!</h1>
+            <hr className="my-4" />
+          </>
+        }
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <button
+            key="submit"
+            className="focus:outline-none ml-4 bg-orange-500 border border-orange-400 rounded-md text-white"
+            onClick={handleCancel}
+          >
+            Tôi đã hiểu
+          </button>,
+        ]}
+      >
+        <p className="text-xl text-center">Đơn hàng trống!</p>
+        <p className="text-xl text-center">
+          Vui lòng chọn sản phẩm bạn muốn mua
+        </p>
+      </Modal>
     </div>
   );
 }

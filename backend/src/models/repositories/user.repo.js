@@ -15,20 +15,8 @@ const findByEmail = async ({
 }) => {
   return await user.findOne({ email }).select(select).lean();
 };
-const findById = async ({
-  shop_id,
-  select = {
-    email: 1,
-    password: 2,
-    name: 1,
-    status: 1,
-    roles: 1,
-  },
-}) => {
-  console.log({ shop_id });
-  return await user
-    .findOne({ _id: convertToObjectIdMongodb(shop_id) })
-    .select(select);
+const findUserById = async (userId) => {
+  return await user.findById(userId).select("-password");
 };
 const createNewRole = async ({ foundUser, role }) => {
   const query = { email: foundUser.email },
@@ -48,9 +36,13 @@ async function updateUserById(userId, updates) {
     { new: true }
   );
 }
+async function findAllUsers() {
+  return await user.find();
+}
 module.exports = {
   findByEmail,
   createNewRole,
-  findById,
+  findUserById,
   updateUserById,
+  findAllUsers,
 };

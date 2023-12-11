@@ -9,11 +9,16 @@ class OrderController {
   }
 
   async checkout(req, res, next) {
-    const { userId, orderItems, overallTotalPrice } = req.body;
+    const { userId, orderItems, address, phone } = req.body;
 
     try {
       // Gọi service để thực hiện checkout
-      const orderData = { user: userId, orderItems: orderItems };
+      const orderData = {
+        user: userId,
+        orderItems: orderItems,
+        address,
+        phone,
+      };
 
       const createdOrders = await this.orderService.checkout(orderData);
 
@@ -21,9 +26,11 @@ class OrderController {
         return res.status(404).json({ message: "No orders created" });
       }
 
-      res
-        .status(201)
-        .json({ message: "Orders created successfully", data: createdOrders });
+      res.status(201).json({
+        status: 201,
+        message: "Orders created successfully",
+        data: createdOrders,
+      });
     } catch (error) {
       // Xử lý lỗi nếu có
       res

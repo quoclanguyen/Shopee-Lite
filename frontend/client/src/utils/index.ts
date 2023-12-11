@@ -94,10 +94,12 @@ export const debounce = <T extends (...args: any[]) => void>(
         }, delay);
     };
 };
-export const createOrderObject = (userId: string, orderItems: OrderItem[]) => {
+export const createOrderObject = (userId: string, orderItems: OrderItem[], address: string, phone: string) => {
     const order: OrderObject = {
         userId,
         orderItems,
+        address,
+        phone,
         overallTotalPrice: sumBy(orderItems, 'totalPrice')
     }
     return order
@@ -112,7 +114,7 @@ export const convertToOrderItem = (array: any[]) => {
             acc.push({
                 shop: item.product.product_shop,
                 items: [{ product: item.product._id, quantity: item.quantity }],
-                totalPrice: item.product.product_price * item.quantity
+                totalPrice: item.product.product_price * item.quantity,
             });
         }
 
@@ -120,3 +122,29 @@ export const convertToOrderItem = (array: any[]) => {
     }, []);
     return arr2;
 }
+// get ward, district, province
+
+export const getDistrictFromProvinceName = (provincesArray: any[], provinceName: string) => {
+    if (!provincesArray) {
+        return []
+    }
+    const selectedProvince = provincesArray.find(province => province.name === provinceName);
+
+    return selectedProvince?.districts;
+}
+export const getWardFromDistrictName = (districtArray: any[], districtName: string) => {
+    if (!districtArray) {
+        return []
+    }
+    const selectedDistrict = districtArray.find(district => district.name === districtName);
+
+    return selectedDistrict?.wards;
+}
+export const getWardDistrictProvinceData = (provincesArray: any[], provinceName: string, districtName: string) => {
+    if (!provinceName || !districtName) {
+        return { districts: [], wards: [] }
+    }
+    const districts = getDistrictFromProvinceName(provincesArray, provinceName);
+    const wards = getWardFromDistrictName(districts, districtName);
+    return { districts, wards };
+};

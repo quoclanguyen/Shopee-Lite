@@ -13,6 +13,7 @@ import Register from "../pages/Register";
 import PrivateRoutes from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import ConfirmOrder from "../pages/ConfirmOrder";
+import UserProfile from "../pages/UserProfile";
 function AppRoutes() {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
@@ -25,6 +26,7 @@ function AppRoutes() {
         <Routes>
           <Route element={<PrivateRoutes isAuth={isAuthenticated} />}>
             <Route path="/cart" element={<CartDetail />} />
+            <Route path="/my-profile" element={<UserProfile />} />
             <Route path="/confirm-order" element={<ConfirmOrder />} />
           </Route>
           <Route element={<PublicRoute isAuth={isAuthenticated} />}>

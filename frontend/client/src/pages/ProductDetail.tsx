@@ -9,18 +9,18 @@ import {
   useFindProductBySlug,
   useFindProductsByShopId,
 } from "../api/services/productServices";
-import { usefindShopById } from "../api/services/userService";
 import QuantityInput from "../components/QuantityInput";
 import { renderAttributesByType } from "../helper";
 import { AddToCartDto, Cart } from "../interfaces";
 import HomeLayout from "../layouts/HomeLayout";
 import { cartSelector, updateCartRedux } from "../store/reducer/cart";
 import { displayCurrencyVND } from "../utils";
+import { useFindShopById } from "../api/services/userService";
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const { data: product, isLoading } = useFindProductBySlug(slug || "");
-  const { data: shop, isLoading: shopLoading } = usefindShopById(
+  const { data: shop, isLoading: shopLoading } = useFindShopById(
     product?.product_shop
   );
   const { data: products } = useFindProductsByShopId(product?.product_shop);
