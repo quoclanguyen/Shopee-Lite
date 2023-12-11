@@ -74,7 +74,7 @@ const Header: React.FC<HeaderProps> = () => {
             className="text-lg font-bold cursor-pointer"
             onClick={() => navigate("/")}
           >
-            Shopee LITE
+            Shop DEV
           </h1>
         </div>
         <SearchField placeholder="Type here to search..." data={products} />
