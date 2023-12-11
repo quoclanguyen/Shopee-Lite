@@ -43,7 +43,7 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
     },
     status: {
       type: String,
@@ -60,7 +60,7 @@ const userSchema = new Schema(
     },
     address: {
       type: AddressSchema,
-      required: true,
+      required: false,
     },
   },
   {

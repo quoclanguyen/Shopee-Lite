@@ -7,13 +7,14 @@ import { createNewProduct, updateProduct, publishProduct } from '../services/pro
 import { calculateTotalQuantity, convertTimestampToFormattedString, displayCurrencyVND, getCurrentDateAsString, renderStatusTags } from '../utils';
 import { Button, Descriptions, Radio, message } from 'antd';
 import Table from "./Table";
+import { updateOrderStatus } from "../services/order";
 const dropdownOptions = {
     "pending": "Đang chờ duyệt",
     "confirmed": "Đã xác nhận",
     "shipped": "Đang giao hàng",
     "cancelled": "Đã hủy",
     "delivered": "Đã giao hàng thành công",
-  };
+};
 const orderColumns = [
     {
         title: 'Mã sản phẩm',
@@ -41,12 +42,13 @@ const orderColumns = [
         render: (_, record) => <span className='font-semibold text-xl'>{displayCurrencyVND(record.product_price)}</span>
     },
 ];
-const OrderForm = ({ orderDetail }) => {
+const OrderForm = ({ orderDetail, methods }) => {
     console.log({ orderDetail })
     const [selectedValue, setSelectedValue] = useState(orderDetail.status);
+    const [loading, setLoading] = useState(false)
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
-      };
+    };
     const [messageApi, contextHolder] = message.useMessage();
     const data = orderDetail.orderItems[0].items.map(({ product, quantity }) => ({
         product_id: product._id,
@@ -54,6 +56,13 @@ const OrderForm = ({ orderDetail }) => {
         product_price: product.product_price,
         quantity,
     }));
+    const handleUpdateOrderStatus = async () => {
+        setLoading(true)
+        const updateResult = await updateOrderStatus(orderDetail._id, selectedValue);
+        console.log(updateResult);
+        setLoading(false)
+        methods.setModalOpen(false)
+    }
     return (
         <>
             <h1 className="text-xl font-semibold">Mã đơn hàng: <span className="text-orange-500">{orderDetail._id}</span></h1>
@@ -70,7 +79,7 @@ const OrderForm = ({ orderDetail }) => {
                     {
                         key: '2',
                         label: 'Email',
-                        children:  orderDetail.user.email,
+                        children: orderDetail.user.email,
                     },
                     {
                         key: '3',
@@ -91,14 +100,14 @@ const OrderForm = ({ orderDetail }) => {
                         key: '6',
                         label: 'Trạng thái',
                         children: <select id="dropdown" value={selectedValue} onChange={handleChange}>
-                        {Object.entries(dropdownOptions).map(([value, label]) => (
-                          <option key={value} value={value}>{renderStatusTags(value)}</option>
-                        ))}
-                      </select>,
+                            {Object.entries(dropdownOptions).map(([value, label]) => (
+                                <option key={value} value={value}>{renderStatusTags(value)}</option>
+                            ))}
+                        </select>,
                     },
                 ]}
             />
-            <div className="w-full flex justify-end"><button className="bg-lime-500 text-white font-semibold px-2 py-1 rounded-md my-4">Lưu thay đổi</button></div>
+            <div className="w-full flex justify-end"><button onClick={handleUpdateOrderStatus} className="bg-lime-500 text-white font-semibold px-2 py-1 rounded-md my-4">{loading ? "Đang cập nhật..." : "Lưu thay đổi"}</button></div>
             <h1 className="text-xl font-semibold">Danh sách các sản phẩm</h1>
             <Table columns={orderColumns} data={data} />
         </>

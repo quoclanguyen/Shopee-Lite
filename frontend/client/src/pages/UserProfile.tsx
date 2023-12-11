@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Input, Select } from "antd";
+import { Input, Select, message } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormItem } from "react-hook-form-antd";
@@ -13,7 +13,7 @@ import {
   getWardDistrictProvinceData,
   getWardFromDistrictName,
 } from "../utils";
-import { useFindUserById } from "../api/services/userService";
+import { updateUser, useFindUserById } from "../api/services/userService";
 
 const profileSchema = yup.object().shape({
   name: yup.string().required("Tên không được để trống"),
@@ -22,10 +22,12 @@ const profileSchema = yup.object().shape({
     .email("Email không hợp lệ")
     .required("Email không được để trống"),
   phone: yup.string().required("Số điện thoại không được để trống"),
-  detailAddress: yup.string().required("Địa chỉ chi tiết không được để trống"),
-  ward: yup.string().required("Vui lòng nhập xã/phường của bạn"),
-  district: yup.string().required("Vui lòng nhập quận/huyện của bạn"),
-  province: yup.string().required("Vui lòng nhập tỉnh/thành phố của bạn"),
+  address: yup.object().shape({
+    detailAddress: yup.string().required('Địa chỉ chi tiết không được để trống'),
+    ward: yup.string().required('Vui lòng nhập xã/phường của bạn'),
+    district: yup.string().required('Vui lòng nhập quận/huyện của bạn'),
+    province: yup.string().required('Vui lòng nhập tỉnh/thành phố của bạn'),
+  })
 });
 const UserProfile = () => {
   const account = useSelector(accountSelector);
@@ -55,10 +57,10 @@ const UserProfile = () => {
       setValue("name", data.name);
       setValue("email", data.email);
       setValue("phone", data.phone);
-      setValue("address.detailAddress", data.address.detailAddress);
-      setValue("address.province", data.address.province);
-      setValue("address.district", data.address.district);
-      setValue("address.ward", data.address.ward);
+      setValue("address.detailAddress", data?.address?.detailAddress ?? "");
+      setValue("address.province", data?.address?.province ?? "");
+      setValue("address.district", data?.address?.district ?? "");
+      setValue("address.ward", data?.address?.ward ?? "");
     }
   }, [data, isLoading]);
   useEffect(() => {
@@ -100,10 +102,12 @@ const UserProfile = () => {
     option?: { label: string; value: string }
   ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
-  const onSubmit = (data) => {
+  console.log(errors)
+  const onSubmit = async (data) => {
     console.log(data);
-    // setLoading(true);
-    // const response = await updateUser(account._id, data);
+    setLoading(true);
+    const response = await updateUser(account._id, data);
+    // messageApi
   };
   return (
     <HomeLayout>
