@@ -95,8 +95,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         className="h-[200px] w-[200px] object-scale-down pb-2 mx-auto"
       />
       <div className="p-2 border-t-gray-100 border-t-2 card">
-        <h1 className="text-gray-900 font-semibold text-base w-full text-ellipsis line-clamp-2 ">
-          {renderTag("new")}
+        <h1 className="text-gray-900 font-semibold text-base truncate">
           {product.product_name}
         </h1>
         <h1 className="text-orange-500 font-medium text-2xl">

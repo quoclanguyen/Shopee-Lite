@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { Modal as AntdModal, message } from "antd";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { accountSelector } from "../store/reducer/auth";
+import { cartSelector } from "../store/reducer/cart";
 import {
   convertToOrderItem,
   createOrderObject,
   displayCurrencyVND,
 } from "../utils";
-import { Modal as AntdModal } from "antd";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { cartSelector } from "../store/reducer/cart";
-import { accountSelector } from "../store/reducer/auth";
-import { checkOut } from "../api/services/orderService";
+import { setOrder } from "../store/reducer/order";
 
 const Modal = styled(AntdModal)`
   & .ant-btn-primary {
@@ -22,84 +22,43 @@ interface CartSummaryProps {
   cartQuantity: number;
 }
 function CartSummary({ cartQuantity, total }: CartSummaryProps) {
-  const [checkoutMessage, setCheckoutMessage] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
   const [showCoupon, setShowCoupon] = useState(false);
   const shippingFee = 0;
+  const dispatch = useDispatch();
   const [isValidCoupon, setIsValidCoupon] = useState(false);
   const cart = useSelector(cartSelector);
   const account = useSelector(accountSelector);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const navigate = useNavigate();
-  const priceAfterDiscount = (
-    originalPrice: number,
-    percentage: number,
-    maximumDiscount: number
-  ) => {
-    return Math.min((originalPrice * percentage) / 100, maximumDiscount);
-  };
-  const handleCoupon = (e) => {
-    setCoupon(e.target.value);
-    if (e.target.value === "") {
-      setShowCoupon(false);
-    }
-  };
-  const handleSubmitCoupon = () => {
-    setShowCoupon(true);
-    setIsValidCoupon(coupon === validCoupon);
-  };
-  function renderCouponMessage(percentage: number, maximumPrice: number) {
-    if (coupon === "") {
-      return "";
-    }
-    return coupon === validCoupon ? (
-      <p className="text-xs text-orange-500 my-2">
-        Giảm {percentage}% đơn hàng, tối đa {displayCurrencyVND(maximumPrice)}
-      </p>
-    ) : (
-      <p className="text-xs text-red-500 my-2">Mã giảm giá không đúng</p>
-    );
-  }
-  const afterDiscount = (
-    originalPrice: number,
-    percentage: number,
-    maximumDiscount: number
-  ) => {
-    return isValidCoupon
-      ? priceAfterDiscount(originalPrice, percentage, maximumDiscount)
-      : 0;
-  };
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
 
   const handleOk = async () => {
-    setConfirmLoading(true);
-    setCheckoutMessage("Vui lòng xác nhận đơn hàng!");
     const selectedItems = cart.filter((item) => item.select);
-    const newObj = createOrderObject(
-      account._id,
-      convertToOrderItem(selectedItems)
+    messageApi.open({
+      key: "checkCart",
+      type: "loading",
+      content: "Đang kiểm tra...",
+    });
+    dispatch(
+      setOrder(
+        createOrderObject(account._id, convertToOrderItem(selectedItems))
+      )
     );
-    const response = await checkOut(newObj);
-    if (response.data) {
-      setCheckoutMessage("Đặt hàng thành công");
+    // kiểm tra xem đã thêm sản phẩm vào order chưa
+    console.log({ selectedItems });
+    if (selectedItems.length !== 0) {
+      navigate("/confirm-order");
+    } else {
+      messageApi.open({
+        key: "checkCart",
+        type: "error",
+        content: "Vui lòng thêm sản phẩm vào đơn hàng",
+        duration: 10,
+      });
     }
-    console.log({ newObj });
-    setConfirmLoading(false);
-    setTimeout(() => {
-      setIsModalOpen(false);
-    }, 5000);
   };
-
-  console.log({ cart });
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
+      {contextHolder}
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
       <div className="grid grid-cols-[2fr_auto] justify-between">
         <p className="text-gray-400 font-normal text-base leading-8">
@@ -115,18 +74,6 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
           {displayCurrencyVND(shippingFee)}
         </p>
       </div>
-      {/* <div className="flex justify-center items-center">
-        <input
-          className="bg-gray-100 outline-none text-base text-gray-900 px-4 py-2 border border-gray-300"
-          onChange={handleCoupon}
-        />
-        <button
-          onClick={handleSubmitCoupon}
-          className="rounded-none h-fit p-2 bg-sky-800 text-white text-base"
-        >
-          Áp dụng
-        </button>
-      </div> */}
       {showCoupon && renderCouponMessage(percentageDiscount, maximumPrice)}
       {isValidCoupon && (
         <div className="grid grid-cols-[2fr_auto] justify-between">
@@ -146,19 +93,10 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       </div>
       <button
         className="rounded-none bg-orange-500 text-white font-semibold w-full"
-        onClick={showModal}
+        onClick={handleOk}
       >
         Xác nhận giỏ hàng ({cartQuantity})
       </button>
-      <Modal
-        title="Check Out"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        confirmLoading={confirmLoading}
-      >
-        <p>{checkoutMessage}</p>
-      </Modal>
     </div>
   );
 }

@@ -24,11 +24,6 @@ const orderItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  status: {
-    type: String,
-    enum: ["pending", "processing", "shipped", "delivered"],
-    default: "pending",
-  },
 });
 
 const orderSchema = new mongoose.Schema(
@@ -51,6 +46,14 @@ const orderSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
     },
   },
   {

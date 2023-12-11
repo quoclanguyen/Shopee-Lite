@@ -105,3 +105,26 @@ export interface CartItem {
   product: string;
   quantity: number;
 }
+
+export interface UserProfileForm {
+  name: string;
+  email: string;
+  phone: string;
+  address: {
+    detailAddress: string;
+    ward: string;
+    district: string;
+    province: string;
+  };
+}
+export interface User {
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    detailAddress?: string;
+    ward?: string;
+    district?: string;
+    province?: string;
+  };
+}

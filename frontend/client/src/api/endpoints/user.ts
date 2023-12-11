@@ -1,3 +1,5 @@
+import { User } from "../../interfaces";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const UserEndpoint = {
     // findAll: {
@@ -9,11 +11,16 @@ export const UserEndpoint = {
         method: "GET",
     },
     findById: (id: string) => ({
-        url: `/users/${id}`,
+        url: `/user/${id}`,
         method: "GET",
     }),
     findShopById: (id: string) => ({
         url: `/shop/${id}`,
         method: "GET",
     }),
+    updateUser: (id: string, update: User) => ({
+        url: "/user/" + id,
+        method: "PUT",
+        data: update
+    })
 };

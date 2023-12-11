@@ -17,8 +17,9 @@ class OrderService {
           orderItems: [item],
           overallTotalPrice: item.totalPrice,
           status: item.status,
+          address: orderData.address,
+          phone: orderData.phone,
         };
-        ``;
 
         const createdOrder = await this.orderRepository.createOrder(order);
         orders.push(createdOrder);
