@@ -1,4 +1,4 @@
-const OrderRepository = require("../models/repositories/order.v2.repo");
+const OrderRepository = require("../models/repositories/order.repo");
 
 class OrderService {
   constructor() {

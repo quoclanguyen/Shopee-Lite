@@ -1,5 +1,5 @@
 const { convertToObjectIdMongodb } = require("../../utils");
-const Order = require("../order.v2.model");
+const Order = require("../order.model");
 class OrderRepository {
   async createOrder(orderData) {
     return await Order.create(orderData);
