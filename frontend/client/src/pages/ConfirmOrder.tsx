@@ -15,11 +15,14 @@ import { useEffect, useState } from "react";
 import { setOrder } from "../store/reducer/order";
 import { checkOut } from "../api/services/orderService";
 import { message } from "antd";
+import OrderItem from "../components/OrderItem";
+import { useNavigate } from "react-router-dom";
 function ConfirmOrder() {
   const [messageApi, contextHolder] = message.useMessage();
   const cart = useSelector(cartSelector);
   const account = useSelector(accountSelector);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [address, setAddress] = useState("Đang cập nhật...");
   const [phone, setPhone] = useState("Đang cập nhật...");
   const { data: user, isLoading } = useFindUserById(account._id);
@@ -69,14 +72,24 @@ function ConfirmOrder() {
       )
     );
     if (response?.status === 201) {
-      messageApi.open({
-        key: "checkout",
-        type: "success",
-        content: "Đặt mua thành công!",
-        duration: 5,
-      });
+      messageApi
+        .open({
+          key: "checkout",
+          type: "success",
+          content: "Đặt mua thành công!",
+          duration: 2,
+        })
+        .then(() => {
+          messageApi.open({
+            key: "checkout",
+            type: "info",
+            content: "Chuyển đến trang trang Đơn hàng",
+            duration: 3,
+          });
+        });
+
+      setTimeout(() => navigate("/my-orders"), 5000);
     }
-    console.log({ response });
   };
   return (
     <HomeLayout>
@@ -91,25 +104,12 @@ function ConfirmOrder() {
             {cart
               .filter((item) => item.select)
               .map((item) => (
-                <div className="grid grid-cols-3 justify-between px-8">
-                  <div className="flex items-start gap-x-2">
-                    <img
-                      src={item.product.product_thumb}
-                      className="h-20 border rounded-sm border-gray-500"
-                    />
-                    <p className="uppercase text-gray-900 font-semibold text-xl">
-                      {item.product.product_name}
-                    </p>
-                  </div>
-                  <p className="text-lg text-gray-500">
-                    Số lượng: {item.quantity}
-                  </p>
-                  <p className="text-xl text-gray-800 font-medium text-right">
-                    {displayCurrencyVND(
-                      item.quantity * item.product.product_price
-                    )}
-                  </p>
-                </div>
+                <OrderItem
+                  product_name={item.product.product_name}
+                  product_thumb={item.product.product_thumb}
+                  quantity={item.quantity}
+                  product_price={item.product.product_price}
+                />
               ))}
           </div>
           <h1 className="font-semibold text-xl text-gray-800 my-4 text-right pr-8">

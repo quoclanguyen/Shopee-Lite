@@ -14,6 +14,7 @@ import PrivateRoutes from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import ConfirmOrder from "../pages/ConfirmOrder";
 import UserProfile from "../pages/UserProfile";
+import OrderPage from "../pages/OrderPage";
 function AppRoutes() {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
@@ -28,6 +29,7 @@ function AppRoutes() {
             <Route path="/cart" element={<CartDetail />} />
             <Route path="/my-profile" element={<UserProfile />} />
             <Route path="/confirm-order" element={<ConfirmOrder />} />
+            <Route path="/my-orders" element={<OrderPage />} />
           </Route>
           <Route element={<PublicRoute isAuth={isAuthenticated} />}>
             <Route path="/login" element={<Login />} />

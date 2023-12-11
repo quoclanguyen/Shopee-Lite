@@ -1,4 +1,4 @@
-import { Modal as AntdModal } from "antd";
+import { Modal as AntdModal, message } from "antd";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ interface CartSummaryProps {
   cartQuantity: number;
 }
 function CartSummary({ cartQuantity, total }: CartSummaryProps) {
-  const [showWarningModal, setShowWarningModal] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const [showCoupon, setShowCoupon] = useState(false);
   const shippingFee = 0;
   const dispatch = useDispatch();
@@ -33,6 +33,11 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
 
   const handleOk = async () => {
     const selectedItems = cart.filter((item) => item.select);
+    messageApi.open({
+      key: "checkCart",
+      type: "loading",
+      content: "Đang kiểm tra...",
+    });
     dispatch(
       setOrder(
         createOrderObject(account._id, convertToOrderItem(selectedItems))
@@ -43,15 +48,17 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
     if (selectedItems.length !== 0) {
       navigate("/confirm-order");
     } else {
-      setShowWarningModal(true);
+      messageApi.open({
+        key: "checkCart",
+        type: "error",
+        content: "Vui lòng thêm sản phẩm vào đơn hàng",
+        duration: 10,
+      });
     }
-  };
-
-  const handleCancel = () => {
-    setShowWarningModal(false);
   };
   return (
     <div className="bg-white rounded-md shadow-md p-4 w-[60vw]">
+      {contextHolder}
       <h1 className="text-gray-900 font-semibold text-lg">Chi tiết giỏ hàng</h1>
       <div className="grid grid-cols-[2fr_auto] justify-between">
         <p className="text-gray-400 font-normal text-base leading-8">
@@ -90,31 +97,6 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
       >
         Xác nhận giỏ hàng ({cartQuantity})
       </button>
-      <Modal
-        open={showWarningModal}
-        title={
-          <>
-            <h1 className="text-xl">Oops!!!!</h1>
-            <hr className="my-4" />
-          </>
-        }
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <button
-            key="submit"
-            className="focus:outline-none ml-4 bg-orange-500 border border-orange-400 rounded-md text-white"
-            onClick={handleCancel}
-          >
-            Tôi đã hiểu
-          </button>,
-        ]}
-      >
-        <p className="text-xl text-center">Đơn hàng trống!</p>
-        <p className="text-xl text-center">
-          Vui lòng chọn sản phẩm bạn muốn mua
-        </p>
-      </Modal>
     </div>
   );
 }
