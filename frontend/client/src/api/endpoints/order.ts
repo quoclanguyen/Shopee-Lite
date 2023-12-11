@@ -5,5 +5,9 @@ export const OrderEndpoint = {
         url: "/order/checkout",
         method: "POST",
         data
+    }),
+    getOrdersByUserId: (userId: string) => ({
+        url: "/order/get-by-user-id/" + userId,
+        method: "GET"
     })
 }

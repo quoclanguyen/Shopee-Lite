@@ -102,7 +102,7 @@ export interface OrderItem {
   totalPrice: number;
 }
 export interface CartItem {
-  product: string;
+  product: Product;
   quantity: number;
 }
 

@@ -38,6 +38,14 @@ class OrderService {
       throw new Error("Could not find orders by shopId");
     }
   }
+  async findOrdersByUserId(userId) {
+    try {
+      const orders = await this.orderRepository.findOrdersByUserId(userId);
+      return orders;
+    } catch (error) {
+      throw new Error("Could not find orders by userId");
+    }
+  }
   async updateOrderStatus(orderId, newStatus) {
     try {
       const updatedOrder = await this.orderRepository.updateOrderStatus(

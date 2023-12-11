@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Input, Select, message } from 'antd';
+import { Input, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormItem } from "react-hook-form-antd";
@@ -23,14 +23,18 @@ const profileSchema = yup.object().shape({
     .required("Email không được để trống"),
   phone: yup.string().required("Số điện thoại không được để trống"),
   address: yup.object().shape({
-    detailAddress: yup.string().required('Địa chỉ chi tiết không được để trống'),
-    ward: yup.string().required('Vui lòng nhập xã/phường của bạn'),
-    district: yup.string().required('Vui lòng nhập quận/huyện của bạn'),
-    province: yup.string().required('Vui lòng nhập tỉnh/thành phố của bạn'),
-  })
+    detailAddress: yup
+      .string()
+      .required("Địa chỉ chi tiết không được để trống"),
+    ward: yup.string().required("Vui lòng nhập xã/phường của bạn"),
+    district: yup.string().required("Vui lòng nhập quận/huyện của bạn"),
+    province: yup.string().required("Vui lòng nhập tỉnh/thành phố của bạn"),
+  }),
 });
 const UserProfile = () => {
   const account = useSelector(accountSelector);
+  const [messageApi, contextHolder] = message.useMessage();
+
   const {
     handleSubmit,
     control,
@@ -102,15 +106,27 @@ const UserProfile = () => {
     option?: { label: string; value: string }
   ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
-  console.log(errors)
+  console.log(errors);
   const onSubmit = async (data) => {
-    console.log(data);
-    setLoading(true);
+    messageApi.open({
+      key: "update-profile",
+      type: "loading",
+      content: "Đang xử lý...",
+    });
     const response = await updateUser(account._id, data);
+    if (response.user) {
+      messageApi.open({
+        key: "update-profile",
+        type: "success",
+        content: "Cập nhật thành công!",
+        duration: 4,
+      });
+    }
     // messageApi
   };
   return (
     <HomeLayout>
+      {contextHolder}
       <div className="bg-gray-100 p-6 rounded-lg shadow-md mx-auto my-4 max-w-[50vw]">
         <h1 className="text-2xl uppercase font-bold text-gray-800 border-l-4 border-l-orange-500 pl-4">
           Thông tin người dùng

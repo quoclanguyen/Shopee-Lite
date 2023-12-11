@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload, OrderItem, OrderObject } from "../interfaces";
-import { sumBy } from "lodash";
+import _, { sumBy } from "lodash";
 export function getCurrentDateAsString() {
     const currentDate = new Date();
 
@@ -105,22 +105,20 @@ export const createOrderObject = (userId: string, orderItems: OrderItem[], addre
     return order
 }
 export const convertToOrderItem = (array: any[]) => {
-    const arr2 = array.reduce((acc, item) => {
-        const existingShop = acc.find(shop => shop.shop === item.product.product_shop);
 
-        if (existingShop) {
-            existingShop.items.push({ product: item.product._id, quantity: item.quantity });
-        } else {
-            acc.push({
-                shop: item.product.product_shop,
-                items: [{ product: item.product._id, quantity: item.quantity }],
-                totalPrice: item.product.product_price * item.quantity,
-            });
-        }
+    // Grouping by shop
+    const groupedByShop = _.groupBy(array, 'product.product_shop');
+    const arr2 = _.map(groupedByShop, (items, shop) => {
+        let totalPrice = _.sumBy(items, item => item.quantity * item.product.product_price);
 
-        return acc;
-    }, []);
-    return arr2;
+        return {
+            shop, // Convert shop back to integer if needed
+            items: items.map(item => ({ product: item.product, quantity: item.quantity })),
+            totalPrice: totalPrice
+        };
+    });
+    return arr2
+
 }
 // get ward, district, province
 

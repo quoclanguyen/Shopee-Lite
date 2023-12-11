@@ -5,6 +5,7 @@ class OrderController {
     this.orderService = new OrderService();
     this.checkout = this.checkout.bind(this);
     this.getOrdersByShopId = this.getOrdersByShopId.bind(this);
+    this.getOrdersByUserId = this.getOrdersByUserId.bind(this);
     this.updateOrderStatus = this.updateOrderStatus.bind(this);
   }
 
@@ -49,6 +50,25 @@ class OrderController {
         return res
           .status(404)
           .json({ message: "No orders found for this shop" });
+      }
+
+      res.status(200).json({ message: "Orders found", data: orders });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Failed to retrieve orders", error: error.message });
+    }
+  }
+  async getOrdersByUserId(req, res, next) {
+    const { userId } = req.params;
+
+    try {
+      const orders = await this.orderService.findOrdersByUserId(userId);
+
+      if (orders.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No orders found for this user" });
       }
 
       res.status(200).json({ message: "Orders found", data: orders });

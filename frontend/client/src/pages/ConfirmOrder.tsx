@@ -47,7 +47,6 @@ function ConfirmOrder() {
 
   const submitOrder = async () => {
     const selectedItems = cart.filter((item) => item.select);
-
     dispatch(
       setOrder(
         createOrderObject(

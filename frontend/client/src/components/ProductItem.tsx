@@ -51,7 +51,6 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         quantity: 1,
       };
       const checkExistRes = await checkProductExists(account._id, product._id);
-
       if (checkExistRes) {
         await removeItemFromCart(account._id, product._id);
       } else {

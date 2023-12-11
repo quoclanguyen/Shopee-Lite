@@ -1,5 +1,7 @@
 const { convertToObjectIdMongodb } = require("../../utils");
 const Order = require("../order.model");
+const _ = require("lodash");
+
 class OrderRepository {
   async createOrder(orderData) {
     return await Order.create(orderData);
@@ -12,6 +14,20 @@ class OrderRepository {
       return orders;
     } catch (error) {
       throw new Error("Could not find orders by shopId");
+    }
+  }
+  async findOrdersByUserId(userId) {
+    try {
+      // Use Mongoose to find orders by userId
+      const orders = await Order.find({ user: userId })
+        .populate("orderItems.items.product")
+        .populate("orderItems.shop");
+      // console.log({ transformedOrders });
+      return orders;
+    } catch (error) {
+      // Handle any errors
+      console.error("Error finding orders:", error);
+      throw new Error("Error finding orders");
     }
   }
   async updateOrderStatus(orderId, newStatus) {

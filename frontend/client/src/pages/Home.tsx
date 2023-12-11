@@ -11,10 +11,17 @@ import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { accountSelector } from "../store/reducer/auth";
 import { useGetCartByUserId } from "../api/services/cartService";
+import { useState } from "react";
+import { Pagination } from "antd";
 function Home() {
   const { data: products, isLoading } = useFindAllProduct();
+  const [currentPage, setCurrentPage] = useState(1);
   const account = useSelector(accountSelector);
   const { data } = useGetCartByUserId(account?._id);
+  // pagination
+  const itemsPerPage = 8;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   return (
     <HomeLayout>
       <Carousel images={heroImages} />
@@ -32,7 +39,7 @@ function Home() {
             Dành cho bạn
           </h1>
           <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4 gap-8 md:px-20">
-            {products?.map((product: Product) => (
+            {products?.slice(startIndex, endIndex).map((product: Product) => (
               <ProductItem product={product} />
             ))}
             {isLoading &&
@@ -45,6 +52,15 @@ function Home() {
                   <Skeleton count={3} />
                 </div>
               ))}
+          </div>
+          <div className="w-full flex justify-center">
+            <Pagination
+              defaultCurrent={1}
+              total={products?.length}
+              pageSize={itemsPerPage}
+              onChange={(page) => setCurrentPage(page)}
+              className="mx-auto"
+            />
           </div>
         </div>
       </div>

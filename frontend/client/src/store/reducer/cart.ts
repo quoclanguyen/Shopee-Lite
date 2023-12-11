@@ -36,20 +36,14 @@ export const checkProductExistsThunk = createAsyncThunk('cart/checkProductExists
 });
 
 interface CartState {
-    items: any[];
+    items: Cart[];
     productExists: boolean;
     totalQuantity: number;
-    error: string | null;
-    message: string;
-    loading: boolean;
 }
 const initialState: CartState = {
     items: [],
     totalQuantity: 0,
     productExists: false,
-    error: null,
-    loading: false,
-    message: ""
 }
 
 const cartSlice = createSlice({
