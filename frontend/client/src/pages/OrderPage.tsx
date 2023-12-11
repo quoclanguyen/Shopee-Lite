@@ -13,12 +13,13 @@ function OrderPage() {
         <Tabs
           defaultActiveKey="1"
           centered
-          items={["pending", "confirmed"].map((_, i) => {
+          size={"large"}
+          items={new Array(3).fill(null).map((_, i) => {
             const id = String(i + 1);
             return {
-              label: `${_}`,
+              label: `Card Tab ${id}`,
               key: id,
-              children: `Content of Tab Pane ${id}`,
+              children: `Content of card tab ${id}`,
             };
           })}
         />
