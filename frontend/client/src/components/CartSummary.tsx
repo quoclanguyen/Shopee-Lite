@@ -31,7 +31,6 @@ function CartSummary({ cartQuantity, total }: CartSummaryProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const navigate = useNavigate();
-  const account = useSelector(accountSelector);
   const priceAfterDiscount = (
     originalPrice: number,
     percentage: number,

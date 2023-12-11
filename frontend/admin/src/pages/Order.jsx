@@ -109,7 +109,7 @@ const Order = () => {
         onCancel={handleCancel}
         className='min-w-[60vw]'
       >
-        <OrderForm orderDetail={order} />
+        <OrderForm orderDetail={order} methods={{ setModalOpen }} />
       </Modal>
     </AdminLayout>
   )

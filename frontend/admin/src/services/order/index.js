@@ -14,6 +14,18 @@ const findAllOrdersByShopId = async (shopId) => {
     return [];
   }
 };
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const orderResponse = await axiosClient.request(
+      OrderEndpoint.updateOrderStatus(orderId, status)
+    );
+    return orderResponse
+  } catch (err) {
+    console.log("Error fetching");
+    console.log(err);
+    return [];
+  }
+};
 export const useFindAllOrdersByShopId = (shopId) => {
   return useQuery({
     queryKey: ["findAllOrdersByShopId", shopId],
