@@ -1,4 +1,4 @@
-const OrderService = require("../services/order.v2.service");
+const OrderService = require("../services/order.service");
 
 class OrderController {
   constructor() {

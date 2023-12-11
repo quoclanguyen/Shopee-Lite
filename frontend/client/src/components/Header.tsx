@@ -107,7 +107,7 @@ const Header: React.FC<HeaderProps> = () => {
                   </li>
                   <li
                     className="menu-item cursor-pointer"
-                    onClick={() => navigate("/my-profile")}
+                    onClick={() => navigate("/my-orders")}
                   >
                     Đơn hàng
                   </li>
